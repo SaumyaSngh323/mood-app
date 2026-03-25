@@ -19,8 +19,18 @@
 
   <h3 id="text"></h3>
 
-  <audio id="music" controls></audio>
+ <div class="playlist-section">
+            <label for="songSelector" style="color: white; display: block; margin-bottom: 10px;">Pick your Artist:</label>
+            <select id="songSelector" onchange="changeSong()" style="background: #222; color: white; padding: 10px; border-radius: 10px; width: 100%;">
+                <option value="">-- Choose a Song --</option>
+                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">Taylor Swift - Style (Vibe)</option>
+                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">Shawn Mendes - Treat You Better (Vibe)</option>
+                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3">Ed Sheeran - Perfect (Vibe)</option>
+                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3">Arijit Singh - Sitaare (Vibe)</option>
+            </select>
+        </div>
 
+        <audio id="music" controls style="width: 100%; margin-top: 20px; filter: invert(1);"></audio>
   <input id="userInput" placeholder="Talk to me..." />
   <br>
   <button onclick="talk()">Send</button>
