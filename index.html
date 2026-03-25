@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lively Mood Space</title>
+    <title>Lost in Aesthetic ✨</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.8s ease-in-out; }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 1s ease-in-out; }
 
         body {
             font-family: 'Poppins', sans-serif;
@@ -15,92 +15,132 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Default Lively Background */
+            /* Default Aesthetic background: Soft Gold/Champagne */
             background: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
             background-size: cover;
             overflow: hidden;
+            position: relative;
         }
 
-        /* BACKGROUND THEMES */
-        body.cute-theme { background-image: url('https://images.unsplash.com/photo-1528459105426-b92368940842?q=80&w=2000&auto=format&fit=crop'); }
-        body.classy-theme { background-image: url('https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=2000&auto=format&fit=crop'); }
-        body.dark-theme { background-image: url('https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2000&auto=format&fit=crop'); }
+        /* --- THEME OVERRIDES --- */
+        
+        /* 1. CUTE THEME: Now More Pinkish & 3D Depth */
+        body.cute-theme {
+            background-image: url('https://images.unsplash.com/photo-1520038410233-7141be7e6f97?q=80&w=2000&auto=format&fit=crop'); 
+            filter: saturate(1.2) contrast(1.1); /* Adds vibrant pinkish depth */
+        }
+        
+        /* 2. CLASSY THEME: Silk/Champagne Luxury */
+        body.classy-theme {
+            background-image: url('https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=2000&auto=format&fit=crop');
+        }
+        
+        /* 3. DARK THEME: Midnight 3D Galaxy */
+        body.dark-theme {
+            background-image: url('https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2000&auto=format&fit=crop');
+            filter: brightness(0.9);
+        }
 
-        /* Navbar */
+        /* Navbar: Wix Style */
         .navbar {
-            position: fixed; top: 0; width: 100%; padding: 20px;
-            display: flex; justify-content: center; gap: 20px;
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); z-index: 1000;
+            position: fixed; top: 0; width: 100%; padding: 25px;
+            display: flex; justify-content: center; gap: 30px;
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
         .navbar button {
             background: none; border: none; color: white; cursor: pointer;
-            font-family: 'Cormorant Garamond', serif; font-size: 18px; text-transform: uppercase;
+            font-family: 'Cormorant Garamond', serif; font-size: 19px; text-transform: uppercase;
+            letter-spacing: 2px;
         }
+        .navbar button:hover { transform: translateY(-3px) scale(1.05); color: #ffafbd; }
 
-        /* Glass Container */
-        .page { display: none; width: 450px; animation: fadeIn 1s; }
-        .active { display: block; }
+        /* Multi-Page System */
+        .page { display: none; width: 450px; animation: fadeIn 1.2s ease; }
+        .active { display: flex; justify-content: center; align-items: center; }
 
+        /* Premium Glass Container */
         .glass-box {
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.3); padding: 40px;
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.25); padding: 50px;
             border-radius: 40px; text-align: center; color: white;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            box-shadow: 0 25px 55px rgba(0,0,0,0.3);
+            position: relative;
         }
 
-        h1 { font-family: 'Cormorant Garamond', serif; font-size: 38px; margin-bottom: 15px; }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 600; margin-bottom: 20px; text-transform: capitalize; }
 
         /* Mood Buttons */
         .mood-btns button {
-            padding: 10px 20px; margin: 5px; border-radius: 25px; border: 1px solid white;
-            background: rgba(255,255,255,0.2); color: white; cursor: pointer;
+            padding: 12px 25px; margin: 8px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1); color: white; cursor: pointer;
+            font-size: 14px;
         }
+        .mood-btns button:hover { background: white; color: black; box-shadow: 0 5px 15px rgba(255,255,255,0.1); }
 
-        /* Chat & Song List */
+        /* Chat & Song Interaction */
         .chat-area input {
-            width: 80%; padding: 10px; background: none; border: none;
-            border-bottom: 2px solid white; color: white; outline: none; margin-top: 20px;
+            width: 85%; padding: 12px; background: none; border: none;
+            border-bottom: 2px solid rgba(255,255,255,0.3); color: white; outline: none; margin-top: 25px;
         }
-        .song-list { display: none; margin-top: 15px; text-align: left; font-size: 14px; }
+        .talk-btn { background:white; color:black; border:none; padding:10px 20px; border-radius:25px; margin-top:10px; cursor:pointer; font-weight:bold; }
 
-        /* Weather Report */
-        .weather-report { font-size: 18px; margin-top: 10px; line-height: 1.6; }
+        /* Playlist Section */
+        .playlist-area { display: none; margin-top: 20px; text-align: center; }
+        .playlist-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; margin-bottom: 10px; font-style: italic; color: #ffafbd; }
+        .artist { color: #aaa; margin-top: 10px; font-size: 13px; text-transform: uppercase; }
+        .song-btn { background: none; border: none; color: white; cursor: pointer; font-size: 15px; margin: 5px; display: block; width: 100%; }
+        .song-btn:hover { color: #ffafbd; text-decoration: underline; }
 
-        /* Diary */
+        /* Music Player Bar */
+        .player-bar { position: fixed; bottom: 0; width: 100%; padding: 10px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: white; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); }
+        audio { filter: invert(0.9); width: 80%; margin-top: 5px; }
+
+        /* Weather Page */
+        .clock { font-size: 30px; font-weight: bold; margin-bottom: 10px; }
+        .weather-report { font-size: 16px; line-height: 1.8; color: #ddd; }
+
+        /* Diary Page */
         textarea {
-            width: 100%; height: 150px; background: rgba(255,255,255,0.1);
-            border: 1px solid white; border-radius: 15px; color: white;
-            padding: 15px; font-family: 'Cormorant Garamond', serif; font-size: 18px;
+            width: 100%; height: 200px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; color: white;
+            padding: 20px; font-family: 'Cormorant Garamond', serif; font-size: 19px; line-height: 1.6;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <button onclick="showPage('home')">🌸 Home</button>
-        <button onclick="showPage('weather-page')">☁️ Weather</button>
-        <button onclick="showPage('diary-page')">✍️ Diary</button>
+        <button onclick="showPage('home')">Home 🌸</button>
+        <button onclick="showPage('weather-page')">Weather ☁️</button>
+        <button onclick="showPage('diary-page')">Diary ✍️</button>
     </nav>
 
     <div id="home" class="page active">
         <div class="glass-box">
             <h1>Lively Moods</h1>
             <div class="mood-btns">
-                <button onclick="setTheme('cute')">Cute Aesthetic</button>
-                <button onclick="setTheme('classy')">Classy Premium</button>
-                <button onclick="setTheme('dark')">Dark 3D</button>
+                <button onclick="setTheme('cute')">Cute Aesthetic 🌸</button>
+                <button onclick="setTheme('classy')">Classy Premium 🥂</button>
+                <button onclick="setTheme('dark')">Dark 3D 🌑</button>
             </div>
             
             <div class="chat-area">
-                <input type="text" id="chatInput" placeholder="Type 'hii' to talk...">
-                <button onclick="handleChat()" style="background:white; color:black; border:none; padding:8px 15px; border-radius:20px; margin-top:10px; cursor:pointer;">Talk</button>
-                <p id="chatReply" style="margin-top:15px;"></p>
+                <input type="text" id="chatInput" placeholder="Type 'hii' or 'hello'...">
+                <button onclick="handleChat()" class="talk-btn">Talk</button>
+                <p id="chatReply" style="margin-top:20px; color:#ffafbd;"></p>
                 
-                <div id="songOptions" class="song-list">
-                    <p><strong>Taylor Swift:</strong> Love Story, Cardigan, Style</p>
-                    <p><strong>Ed Sheeran:</strong> Perfect, Photograph, Shivers</p>
+                <div id="playlistArea" class="playlist-area">
+                    <p class="playlist-title">Stay Aesthetic, Stay Lively</p>
+                    
+                    <p class="artist">Taylor Swift</p>
+                    <button onclick="playSong('Style')" class="song-btn">Style (Vibe)</button>
+                    
+                    <p class="artist">Ed Sheeran</p>
+                    <button onclick="playSong('Photograph')" class="song-btn">Photograph (Classy)</button>
+                    <button onclick="playSong('Shivers')" class="song-btn">Shivers (Lively)</button>
                 </div>
             </div>
         </div>
@@ -109,11 +149,11 @@
     <div id="weather-page" class="page">
         <div class="glass-box">
             <h1>Aesthetic Report</h1>
-            <div id="clock" style="font-size: 24px; font-weight: bold;"></div>
+            <div id="liveClock" class="clock"></div>
             <div class="weather-report">
                 <p>📍 Location: Global Vibe</p>
-                <p>🌡️ Temperature: 26°C</p>
-                <p>✨ Condition: Classy & Serene</p>
+                <p>🌡️ Temp: 26°C / 78°F</p>
+                <p>✨ Conditions: Classy & Serene</p>
                 <p>🌬️ Wind: Soft Aesthetic Breeze</p>
             </div>
         </div>
@@ -122,44 +162,68 @@
     <div id="diary-page" class="page">
         <div class="glass-box">
             <h1>Dear Diary...</h1>
-            <p style="margin-bottom: 10px;">How was your day spent?</p>
-            <textarea id="diaryInput" placeholder="Write your heart out..."></textarea>
-            <button onclick="alert('Saved to your heart! ✨')" style="margin-top:10px; background:white; color:black; border:none; padding:10px 20px; border-radius:20px; cursor:pointer;">Save Day</button>
+            <p style="margin-bottom: 15px; color:#eee;">How was your day spent?</p>
+            <textarea id="diaryInput" placeholder="Write your heart out...🎧"></textarea>
+            <button onclick="alert('Saved to your heart! ✨')" style="margin-top:15px; background:white; color:black; border:none; padding:12px 25px; border-radius:25px; cursor:pointer;">Save Day</button>
         </div>
     </div>
 
+    <div class="player-bar">
+        Playing: <span id="currentSongName">Wait for Vibe...</span>
+        <br>
+        <audio id="musicPlayer" controls></audio>
+    </div>
+
     <script>
-        // PAGE NAVIGATION
+        // --- MULTI-PAGE NAVIGATION ---
         function showPage(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
 
-        // BACKGROUND THEMES
-        function setTheme(theme) {
+        // --- DYNAMIC 3D THEMES ---
+        function setTheme(themeName) {
             document.body.className = '';
-            document.body.classList.add(theme + '-theme');
+            document.body.classList.add(themeName + '-theme');
         }
 
-        // INTERACTIVE CHAT
+        // --- INTERACTIVE CHAT ---
         function handleChat() {
             const input = document.getElementById('chatInput').value.toLowerCase();
             const reply = document.getElementById('chatReply');
-            const songs = document.getElementById('songOptions');
+            const playlist = document.getElementById('playlistArea');
 
             if (input.includes('hii') || input.includes('hello')) {
-                reply.innerHTML = "Hey! Welcome here. Would you like to listen to a song? ✨";
-                songs.style.display = "block";
+                reply.innerHTML = "Hey welcome here would you like to listen song then list of Taylor Swift and Ed Sheeran come";
+                playlist.style.display = "block";
+            } else if (input.includes('write')) {
+                reply.innerHTML = "Opening your Diary... switching pages.";
+                showPage('diary-page');
+                playlist.style.display = "none";
             } else {
-                reply.innerHTML = "That's lovely! Tell me more or switch to the Diary page.";
-                songs.style.display = "none";
+                reply.innerHTML = "Lost in this moment... I am here for you. Switch to Diary or Type 'hii'.🎧";
+                playlist.style.display = "none";
             }
         }
 
-        // LIVE CLOCK
+        // --- MUSIC PLAYER LOGIC ---
+        function playSong(songName) {
+            const player = document.getElementById('musicPlayer');
+            const songTitle = document.getElementById('currentSongName');
+            songTitle.innerText = songName;
+            
+            // We use placeholders from soundhelix since uploading music on GitHub is complex.
+            if (songName === 'Style') player.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+            if (songName === 'Photograph') player.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3";
+            if (songName === 'Shivers') player.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3";
+            
+            player.play();
+        }
+
+        // --- LIVE CLOCK ---
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString();
+            document.getElementById('liveClock').innerText = now.toLocaleTimeString();
         }
         setInterval(updateClock, 1000);
         updateClock();
