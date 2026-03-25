@@ -1,112 +1,37 @@
-/* Universal Styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    transition: all 0.6s ease-in-out; /* Smooth transitions for moods and pages */
-}
+* { margin: 0; padding: 0; box-sizing: border-box; transition: 0.5s; }
 
 body {
     font-family: 'Poppins', sans-serif;
-    /* --- NEW LIVELY Mosaic Background --- */
     background: url('https://i.postimg.cc/q73vY1Pj/aesthetic-mosaic.png') no-repeat center center fixed;
     background-size: cover;
     height: 100vh;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Keeps Navbar at top */
+    justify-content: center;
     align-items: center;
-    color: #333;
-    overflow: hidden; /* Prevents double scrollbars */
 }
 
-/* --- Wix-style Glassmorphism Container --- */
-.container.glass-premium {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 50px;
-    border-radius: 35px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+/* Page Visibility */
+.page { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; }
+.page.active { display: flex; }
+
+/* Navigation */
+.navbar { position: fixed; top: 0; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); width: 100%; text-align: center; padding: 10px; z-index: 1000; }
+.navbar button { background: none; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+
+/* The Glass Box */
+.glass-premium {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 40px;
+    border-radius: 30px;
     text-align: center;
-    width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-/* Multi-Page Navigation Styling (Wix Style) */
-.navbar {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(10px);
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 15px 0;
-    position: fixed;
-    top: 0;
-    z-index: 1000;
-}
+/* Mood Filters for the Background */
+body.soft-bg { backdrop-filter: sepia(0.2) brightness(1.1); }
+body.classy-bg { backdrop-filter: grayscale(0.8) contrast(1.2); }
+body.lively-bg { backdrop-filter: saturate(2) brightness(1.1); }
 
-.navbar button {
-    background: transparent;
-    border: none;
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
-    color: #333;
-    padding: 10px 20px;
-    cursor: pointer;
-    text-transform: uppercase;
-}
-
-.navbar button:hover {
-    color: #ffafbd;
-    transform: scale(1.05);
-}
-
-/* Page Control (CRUCIAL for hide/show) */
-.page {
-    display: none; /* Pages are hidden by default */
-    width: 100%;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-    padding-top: 80px; /* Offset for navbar */
-    position: absolute; /* Ensures pages stack */
-}
-
-.page.active {
-    display: flex; /* Active page is shown */
-    animation: fadeIn 0.8s;
-}
-
-/* Mood Classes that manipulate the mosaic background */
-body.soft-girl {
-    backdrop-filter: brightness(1.1) contrast(1.1) blur(2px);
-}
-
-body.classy-look {
-    backdrop-filter: brightness(0.9) grayscale(0.2) contrast(1.2);
-}
-
-body.lively-mood {
-    backdrop-filter: brightness(1.1) saturate(1.8) contrast(1.1);
-}
-
-/* Mood Button Styling */
-.moods button {
-    background: rgba(255, 255, 255, 0.6);
-    border: 1px solid #ddd;
-    color: #555;
-    padding: 10px 20px;
-    border-radius: 20px;
-    margin: 5px;
-    cursor: pointer;
-}
-
-.moods button:hover {
-    background: white;
-}
-
-/* Simple Fade In Animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+.goal-item { background: white; padding: 10px; margin: 10px; border-radius: 10px; display: flex; align-items: center; }
