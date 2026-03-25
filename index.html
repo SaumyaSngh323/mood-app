@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mood App</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Your Mood Space ✨</h2>
+
+  <div class="moods">
+    <button onclick="setMood('cute')">🌸</button>
+    <button onclick="setMood('dark')">🖤</button>
+    <button onclick="setMood('classy')">✨</button>
+  </div>
+
+  <h3 id="text"></h3>
+
+  <audio id="music" controls></audio>
+
+  <input id="userInput" placeholder="Talk to me..." />
+  <br>
+  <button onclick="talk()">Send</button>
+
+  <p id="reply"></p>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
