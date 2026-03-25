@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lively Moods | Official Premium</title>
+    <title>Lively Moods | Official</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -16,104 +16,98 @@
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            background: #111;
+            background: #1a1a1a;
         }
 
-        /* --- THEMES --- */
-        .bg-overlay {
+        /* --- BACKGROUND THEMES --- */
+        .bg-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
-            z-index: -1; filter: brightness(0.7);
+            z-index: -1; filter: brightness(0.6);
         }
 
-        /* Pink Theme */
-        body.cute-theme .bg-overlay { background-image: url('https://images.unsplash.com/photo-1518131359043-409fde1fa9e3?q=80&w=2000'); }
-        body.cute-theme { color: #4d2626; }
+        /* Soft Pink */
+        body.cute-theme .bg-layer { background-image: url('https://images.unsplash.com/photo-1518131359043-409fde1fa9e3?q=80&w=2000'); }
+        /* Premium Silk Gold */
+        body.classy-theme .bg-layer { background-image: url('https://images.unsplash.com/photo-1513519245088-0e12902e35ca?q=80&w=2000'); }
+        /* Midnight Sky */
+        body.dark-theme .bg-layer { background-image: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2000'); }
 
-        /* Premium Silk Theme */
-        body.classy-theme .bg-overlay { background-image: url('https://images.unsplash.com/photo-1513519245088-0e12902e35ca?q=80&w=2000'); }
-        body.classy-theme { color: #3d3025; }
-
-        /* Midnight Sky Theme */
-        body.dark-theme .bg-overlay { background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000'); }
-        body.dark-theme { color: #ffffff; }
-
-        /* --- GLASSMOPRHISM BOX --- */
         .glass-box {
-            width: 90%; max-width: 600px; padding: 40px; border-radius: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px) saturate(150%);
+            width: 90%; max-width: 550px; padding: 40px; border-radius: 40px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(25px) saturate(160%);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 30px 100px rgba(0,0,0,0.5);
-            text-align: center;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+            text-align: center; color: white;
         }
 
-        h1 { font-family: 'Cormorant+Garamond', serif; font-size: 45px; margin-bottom: 20px; font-weight: 600; }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 45px; margin-bottom: 20px; }
 
-        .nav { position: fixed; top: 30px; display: flex; gap: 30px; z-index: 100; }
-        .nav button { background: none; border: none; cursor: pointer; color: inherit; font-size: 20px; font-family: 'Cormorant+Garamond', serif; font-style: italic; }
+        nav { position: fixed; top: 30px; display: flex; gap: 30px; }
+        nav button { background: none; border: none; cursor: pointer; color: white; font-size: 20px; font-family: 'Cormorant Garamond', serif; font-style: italic; }
 
-        .btn {
-            padding: 10px 20px; margin: 5px; border-radius: 30px; border: 1px solid currentColor;
-            background: rgba(255,255,255,0.05); color: inherit; cursor: pointer; font-weight: 600;
+        .btn-mood {
+            padding: 10px 20px; margin: 5px; border-radius: 30px; border: 1px solid white;
+            background: rgba(255,255,255,0.1); color: white; cursor: pointer; font-weight: 600;
         }
-        .btn:hover { background: white; color: black; }
+        .btn-mood:hover { background: white; color: black; }
 
-        /* Spotify Player Fix */
-        #music-box { display: none; margin-top: 25px; border-radius: 15px; overflow: hidden; }
-
+        #music-wrap { display: none; margin-top: 25px; }
+        
         .page { display: none; }
-        .active { display: block; }
+        .active { display: block; animation: fadeIn 0.8s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="cute-theme">
 
-    <div class="bg-overlay"></div>
+    <div class="bg-layer"></div>
 
-    <nav class="nav">
+    <nav>
         <button onclick="showPage('home')">Home 🌸</button>
-        <button onclick="showPage('weather')">Weather ☁️</button>
+        <button onclick="showPage('forecast')">Forecast ☁️</button>
         <button onclick="showPage('diary')">Diary ✍️</button>
     </nav>
 
     <div id="home" class="page active">
         <div class="glass-box">
             <h1>Lively Space</h1>
-            <div style="margin-bottom: 20px;">
-                <button class="btn" onclick="setTheme('cute')">Pink Petals</button>
-                <button class="btn" onclick="setTheme('classy')">Premium Silk</button>
-                <button class="btn" onclick="setTheme('dark')">Midnight</button>
+            <div>
+                <button class="btn-mood" onclick="setTheme('cute')">Pink Petals</button>
+                <button class="btn-mood" onclick="setTheme('classy')">Premium Silk</button>
+                <button class="btn-mood" onclick="setTheme('dark')">Midnight</button>
             </div>
-
-            <input type="text" id="chatInput" style="width:70%; padding:10px; background:none; border:none; border-bottom:2px solid currentColor; color:inherit; font-size:18px; text-align:center;" placeholder="Whisper 'hii'...">
+            <input type="text" id="chatInput" style="width:70%; padding:10px; background:none; border:none; border-bottom:2px solid white; color:white; font-size:18px; text-align:center; margin-top:20px;" placeholder="Whisper 'hii' for music...">
             <br>
-            <button onclick="handleHii()" class="btn" style="margin-top:15px;">Reveal Music</button>
-
-            <div id="music-box">
-                <p style="margin-bottom:10px; font-style:italic;">Official Artist Track:</p>
-                <div id="spotify-player"></div>
+            <button onclick="checkChat()" class="btn-mood" style="margin-top:15px;">Enter</button>
+            
+            <div id="music-wrap">
+                <p style="margin-bottom:10px; font-style:italic;">Choose your artist:</p>
+                <button class="btn-mood" onclick="playMusic('taylor')">Taylor Swift</button>
+                <button class="btn-mood" onclick="playMusic('arijit')">Arijit Singh</button>
+                <div id="player" style="margin-top:15px;"></div>
             </div>
         </div>
     </div>
 
-    <div id="weather" class="page">
+    <div id="forecast" class="page">
         <div class="glass-box">
             <h1>Aesthetic Forecast</h1>
-            <h2 id="time" style="font-size:35px; letter-spacing:5px;"></h2>
-            <div style="margin-top:20px; text-align:left; background:rgba(0,0,0,0.1); padding:20px; border-radius:20px;">
-                <p><b>Location:</b> Mumbai</p>
-                <p><b>Temp:</b> 28°C</p>
-                <p><b>Vibe:</b> Classy & Sunny</p>
+            <div style="font-size:24px; margin-top:20px;">
+                <p><b>Mumbai</b></p>
+                <p style="font-size:50px; margin:10px 0;">28°C</p>
+                <p>Mainly Classy & Sunny</p>
             </div>
         </div>
     </div>
 
     <div id="diary" class="page">
         <div class="glass-box">
-            <h1>Private Journal</h1>
-            <textarea style="width:100%; height:200px; background:none; border:1px solid rgba(255,255,255,0.2); border-radius:20px; color:inherit; padding:15px; font-family:serif; font-size:20px; outline:none;" placeholder="Write your aesthetic thoughts..."></textarea>
-            <button class="btn" style="margin-top:15px;">Lock Entry</button>
+            <h1>Personal Diary</h1>
+            <textarea style="width:100%; height:200px; background:none; border:1px solid white; border-radius:20px; color:white; padding:15px; font-size:18px; outline:none;" placeholder="Write your thoughts..."></textarea>
+            <button class="btn-mood" style="margin-top:15px;">Save Entry</button>
         </div>
     </div>
 
@@ -127,23 +121,17 @@
             document.body.className = t + '-theme';
         }
 
-        function handleHii() {
-            const input = document.getElementById('chatInput').value.toLowerCase();
-            if(input.includes('hii')) {
-                document.getElementById('music-box').style.display = 'block';
-                // Using the official Spotify embed URL format to prevent "Page Not Found"
-                document.getElementById('spotify-player').innerHTML = `
-                    <iframe src="https://open.spotify.com/embed/track/1BxfuRmsvIuH06pKRuoa6p?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
-                `;
+        function checkChat() {
+            if(document.getElementById('chatInput').value.toLowerCase().includes('hii')) {
+                document.getElementById('music-wrap').style.display = 'block';
             }
         }
 
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('time').innerText = now.toLocaleTimeString();
+        function playMusic(artist) {
+            const player = document.getElementById('player');
+            let trackId = artist === 'taylor' ? '1BxfuRmsvIuH06pKRuoa6p' : '76S6086S89s98s';
+            player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/${trackId}" width="100%" height="80" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`;
         }
-        setInterval(updateTime, 1000);
-        updateTime();
     </script>
 </body>
 </html>
