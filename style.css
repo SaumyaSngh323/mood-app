@@ -3,71 +3,24 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.6s ease-in-out; /* Smooth transitions for moods and pages */
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    /* Lively background using the mosaic image */
+    /* --- NEW LIVELY Mosaic Background --- */
     background: url('https://i.postimg.cc/q73vY1Pj/aesthetic-mosaic.png') no-repeat center center fixed;
     background-size: cover;
     height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Nav at the top */
+    justify-content: flex-start; /* Keeps Navbar at top */
     align-items: center;
     color: #333;
+    overflow: hidden; /* Prevents double scrollbars */
 }
 
-/* Premium Wix-like Navbar */
-.navbar {
-    background: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(10px);
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 15px 0;
-    position: fixed;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-}
-
-.navbar button {
-    background: transparent;
-    border: none;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    padding: 10px 20px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.navbar button:hover {
-    color: #ffafbd;
-    transform: scale(1.05);
-}
-
-/* Page Control */
-.page {
-    display: none; /* Hidden by default */
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 80px; /* Offset for navbar */
-}
-
-.page.active {
-    display: flex; /* Only active page shows */
-    animation: fadeIn 0.8s;
-}
-
-/* Wix-style Glassmorphism Container */
+/* --- Wix-style Glassmorphism Container --- */
 .container.glass-premium {
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(20px);
@@ -79,21 +32,68 @@ body {
     width: 400px;
 }
 
-/* Typography from example */
-h1, h2, h3 {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 10px;
+/* Multi-Page Navigation Styling (Wix Style) */
+.navbar {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
 }
 
-h1 { font-size: 32px; letter-spacing: 1px; }
+.navbar button {
+    background: transparent;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #333;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
 
-/* Interactive Mood Buttons */
+.navbar button:hover {
+    color: #ffafbd;
+    transform: scale(1.05);
+}
+
+/* Page Control (CRUCIAL for hide/show) */
+.page {
+    display: none; /* Pages are hidden by default */
+    width: 100%;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    padding-top: 80px; /* Offset for navbar */
+    position: absolute; /* Ensures pages stack */
+}
+
+.page.active {
+    display: flex; /* Active page is shown */
+    animation: fadeIn 0.8s;
+}
+
+/* Mood Classes that manipulate the mosaic background */
+body.soft-girl {
+    backdrop-filter: brightness(1.1) contrast(1.1) blur(2px);
+}
+
+body.classy-look {
+    backdrop-filter: brightness(0.9) grayscale(0.2) contrast(1.2);
+}
+
+body.lively-mood {
+    backdrop-filter: brightness(1.1) saturate(1.8) contrast(1.1);
+}
+
+/* Mood Button Styling */
 .moods button {
     background: rgba(255, 255, 255, 0.6);
     border: 1px solid #ddd;
-    font-family: 'Poppins', sans-serif;
     color: #555;
     padding: 10px 20px;
     border-radius: 20px;
@@ -103,49 +103,9 @@ h1 { font-size: 32px; letter-spacing: 1px; }
 
 .moods button:hover {
     background: white;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    transform: translateY(-2px);
 }
 
-/* Goal List Item styling */
-.goal-item {
-    background: white;
-    color: #333;
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-}
-
-.goal-item span {
-    font-size: 20px;
-    margin-right: 15px;
-}
-
-/* Chat Section */
-.chat-section input {
-    border: none;
-    border-bottom: 2px solid #ddd;
-    background: transparent;
-    padding: 10px;
-    width: 70%;
-    margin-top: 20px;
-    outline: none;
-}
-
-.chat-section button {
-    background: #ffc3a0;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 20px;
-    cursor: pointer;
-}
-
-/* Fade In Animation */
+/* Simple Fade In Animation */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
