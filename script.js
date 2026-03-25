@@ -1,35 +1,47 @@
+// Multi-Page Navigation Logic
+function showPage(pageId) {
+    // 1. Hide all pages
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p => p.classList.remove('active'));
+    
+    // 2. Show the page that was clicked
+    document.getElementById(pageId).classList.add('active');
+}
+
+// Interactive Mood/Background Logic
 function setMood(mood) {
     const body = document.body;
     const text = document.getElementById("text");
 
-    if (mood === 'cute') {
-        body.style.background = "linear-gradient(135deg, #ffafbd, #ffc3a0)";
-        text.innerText = "Everything is Soft & Sweet ✨";
-    } else if (mood === 'dark') {
-        body.style.background = "linear-gradient(135deg, #0f0c29, #302b63, #24243e)";
-        text.innerText = "Lost in the Aesthetic 🌑";
+    if (mood === 'soft') {
+        body.style.backdropFilter = "brightness(1) contrast(1)";
+        text.innerText = "Everything is Soft Girl Sweet ✨";
     } else if (mood === 'classy') {
-        body.style.background = "linear-gradient(135deg, #2c3e50, #bdc3c7)";
-        text.innerText = "Keep it Classy 🥂";
+        body.style.backdropFilter = "brightness(0.9) grayscale(0.2)";
+        text.innerText = "Keep it Classy, Keep it Quiet 🥂";
+    } else if (mood === 'lively') {
+        // Increases saturation to feel energetic
+        body.style.backdropFilter = "brightness(1.1) saturate(1.4)";
+        text.innerText = "Feeling Absolutely Lively! 🌸";
     }
 }
 
-function changeSong() {
+// Basic Audio Player Logic (Can use soundhelix or new links)
+function changeSong(songUrl) {
     const music = document.getElementById("music");
-    const selector = document.getElementById("songSelector");
-    if (selector && selector.value !== "") {
-        music.src = selector.value;
+    if (music && songUrl !== "") {
+        music.src = songUrl;
         music.play();
     }
 }
 
-// This matches the talk() function your button is looking for
+// Chat Box Logic (Matches HTML talk() function)
 function talk() {
     const input = document.getElementById("userInput").value;
     const replyText = document.getElementById("reply");
     
     if (input) {
-        replyText.innerText = "I hear you... stay aesthetic! 🎧";
+        replyText.innerText = "Lost in this aesthetic moment...listening... 🎧";
         document.getElementById("userInput").value = "";
     }
 }
