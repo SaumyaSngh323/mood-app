@@ -17,16 +17,19 @@ function setMood(mood) {
 function changeSong() {
     const music = document.getElementById("music");
     const selector = document.getElementById("songSelector");
-    if (selector.value !== "") {
+    if (selector && selector.value !== "") {
         music.src = selector.value;
         music.play();
     }
 }
 
-function sendMessage() {
+// This matches the talk() function your button is looking for
+function talk() {
     const input = document.getElementById("userInput").value;
+    const replyText = document.getElementById("reply");
+    
     if (input) {
-        alert("I'm listening... You said: " + input);
+        replyText.innerText = "I hear you... stay aesthetic! 🎧";
         document.getElementById("userInput").value = "";
     }
 }
