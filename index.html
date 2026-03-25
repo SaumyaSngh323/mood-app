@@ -3,167 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lost in Aesthetic</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Poppins:wght@300&display=swap" rel="stylesheet">
+    <title>Lively Mood Space</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS STYLES */
-        * { margin: 0; padding: 0; box-sizing: border-box; transition: 0.6s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: all 0.8s ease-in-out; }
 
         body {
             font-family: 'Poppins', sans-serif;
-            /* Using a high-quality aesthetic flower/mosaic background */
-            background: url('https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
-            background-size: cover;
             height: 100vh;
-            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
+            /* Default Lively Background */
+            background: url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
         }
+
+        /* BACKGROUND THEMES */
+        body.cute-theme { background-image: url('https://images.unsplash.com/photo-1528459105426-b92368940842?q=80&w=2000&auto=format&fit=crop'); }
+        body.classy-theme { background-image: url('https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=2000&auto=format&fit=crop'); }
+        body.dark-theme { background-image: url('https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?q=80&w=2000&auto=format&fit=crop'); }
 
         /* Navbar */
         .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            display: flex;
-            justify-content: center;
-            padding: 15px;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+            position: fixed; top: 0; width: 100%; padding: 20px;
+            display: flex; justify-content: center; gap: 20px;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); z-index: 1000;
         }
-
         .navbar button {
-            background: none;
-            border: none;
-            color: white;
-            margin: 0 15px;
-            cursor: pointer;
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 18px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* Page System */
-        .page {
-            display: none; /* Hidden by default */
-            width: 400px;
-            animation: fadeIn 0.8s ease;
-        }
-
-        .active {
-            display: block; /* Shown when active */
+            background: none; border: none; color: white; cursor: pointer;
+            font-family: 'Cormorant Garamond', serif; font-size: 18px; text-transform: uppercase;
         }
 
         /* Glass Container */
+        .page { display: none; width: 450px; animation: fadeIn 1s; }
+        .active { display: block; }
+
         .glass-box {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 40px;
-            border-radius: 40px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.3); padding: 40px;
+            border-radius: 40px; text-align: center; color: white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
 
-        h1 { font-family: 'Cormorant Garamond', serif; font-size: 35px; margin-bottom: 10px; }
+        h1 { font-family: 'Cormorant Garamond', serif; font-size: 38px; margin-bottom: 15px; }
 
+        /* Mood Buttons */
         .mood-btns button {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid white;
-            color: white;
-            padding: 8px 15px;
-            margin: 5px;
-            border-radius: 20px;
-            cursor: pointer;
+            padding: 10px 20px; margin: 5px; border-radius: 25px; border: 1px solid white;
+            background: rgba(255,255,255,0.2); color: white; cursor: pointer;
         }
 
-        /* Mood Filter Effects */
-        .soft-mode { backdrop-filter: brightness(1.2) sepia(0.2); }
-        .classy-mode { backdrop-filter: grayscale(1) contrast(1.2); }
-        .lively-mode { backdrop-filter: saturate(2.5); }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Chat & Song List */
+        .chat-area input {
+            width: 80%; padding: 10px; background: none; border: none;
+            border-bottom: 2px solid white; color: white; outline: none; margin-top: 20px;
         }
+        .song-list { display: none; margin-top: 15px; text-align: left; font-size: 14px; }
+
+        /* Weather Report */
+        .weather-report { font-size: 18px; margin-top: 10px; line-height: 1.6; }
+
+        /* Diary */
+        textarea {
+            width: 100%; height: 150px; background: rgba(255,255,255,0.1);
+            border: 1px solid white; border-radius: 15px; color: white;
+            padding: 15px; font-family: 'Cormorant Garamond', serif; font-size: 18px;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <button onclick="showPage('home')">Home</button>
-        <button onclick="showPage('goals')">Goals</button>
-        <button onclick="showPage('weather')">Weather</button>
+        <button onclick="showPage('home')">🌸 Home</button>
+        <button onclick="showPage('weather-page')">☁️ Weather</button>
+        <button onclick="showPage('diary-page')">✍️ Diary</button>
     </nav>
 
     <div id="home" class="page active">
         <div class="glass-box">
-            <h1>Lively Space ✨</h1>
-            <p id="status">Pick your energy...</p>
+            <h1>Lively Moods</h1>
             <div class="mood-btns">
-                <button onclick="changeVibe('soft')">Soft</button>
-                <button onclick="changeVibe('classy')">Classy</button>
-                <button onclick="changeVibe('lively')">Lively</button>
+                <button onclick="setTheme('cute')">Cute Aesthetic</button>
+                <button onclick="setTheme('classy')">Classy Premium</button>
+                <button onclick="setTheme('dark')">Dark 3D</button>
             </div>
-            <br>
-            <input type="text" id="chatInput" placeholder="Talk to me..." style="background:none; border:none; border-bottom:1px solid white; color:white; padding:5px; width:80%;">
-            <button onclick="talk()" style="background:white; color:black; border-radius:10px; border:none; padding:5px 10px; margin-top:10px;">Send</button>
-            <p id="reply" style="margin-top:10px; font-size:12px;"></p>
+            
+            <div class="chat-area">
+                <input type="text" id="chatInput" placeholder="Type 'hii' to talk...">
+                <button onclick="handleChat()" style="background:white; color:black; border:none; padding:8px 15px; border-radius:20px; margin-top:10px; cursor:pointer;">Talk</button>
+                <p id="chatReply" style="margin-top:15px;"></p>
+                
+                <div id="songOptions" class="song-list">
+                    <p><strong>Taylor Swift:</strong> Love Story, Cardigan, Style</p>
+                    <p><strong>Ed Sheeran:</strong> Perfect, Photograph, Shivers</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div id="goals" class="page">
+    <div id="weather-page" class="page">
         <div class="glass-box">
-            <h1>Future Plans ✈️</h1>
-            <p style="margin: 10px 0;">• Study Abroad 2027</p>
-            <p>• Premium Web Designer</p>
+            <h1>Aesthetic Report</h1>
+            <div id="clock" style="font-size: 24px; font-weight: bold;"></div>
+            <div class="weather-report">
+                <p>📍 Location: Global Vibe</p>
+                <p>🌡️ Temperature: 26°C</p>
+                <p>✨ Condition: Classy & Serene</p>
+                <p>🌬️ Wind: Soft Aesthetic Breeze</p>
+            </div>
         </div>
     </div>
 
-    <div id="weather" class="page">
+    <div id="diary-page" class="page">
         <div class="glass-box">
-            <h1>Weather ☁️</h1>
-            <h2>24°C</h2>
-            <p>Classy Breeze</p>
+            <h1>Dear Diary...</h1>
+            <p style="margin-bottom: 10px;">How was your day spent?</p>
+            <textarea id="diaryInput" placeholder="Write your heart out..."></textarea>
+            <button onclick="alert('Saved to your heart! ✨')" style="margin-top:10px; background:white; color:black; border:none; padding:10px 20px; border-radius:20px; cursor:pointer;">Save Day</button>
         </div>
     </div>
 
     <script>
-        // JAVASCRIPT LOGIC
-        function showPage(pageId) {
-            // Hide all pages
-            const pages = document.querySelectorAll('.page');
-            pages.forEach(p => p.classList.remove('active'));
-
-            // Show selected page
-            document.getElementById(pageId).classList.add('active');
+        // PAGE NAVIGATION
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        function changeVibe(vibe) {
-            const body = document.body;
-            body.className = ''; // Reset
-            
-            if(vibe === 'soft') body.classList.add('soft-mode');
-            if(vibe === 'classy') body.classList.add('classy-mode');
-            if(vibe === 'lively') body.classList.add('lively-mode');
-            
-            document.getElementById('status').innerText = vibe.toUpperCase() + " Energy Activated.";
+        // BACKGROUND THEMES
+        function setTheme(theme) {
+            document.body.className = '';
+            document.body.classList.add(theme + '-theme');
         }
 
-        function talk() {
-            const val = document.getElementById('chatInput').value;
-            if(val) {
-                document.getElementById('reply').innerText = "I hear you. Stay aesthetic... 🎧";
-                document.getElementById('chatInput').value = "";
+        // INTERACTIVE CHAT
+        function handleChat() {
+            const input = document.getElementById('chatInput').value.toLowerCase();
+            const reply = document.getElementById('chatReply');
+            const songs = document.getElementById('songOptions');
+
+            if (input.includes('hii') || input.includes('hello')) {
+                reply.innerHTML = "Hey! Welcome here. Would you like to listen to a song? ✨";
+                songs.style.display = "block";
+            } else {
+                reply.innerHTML = "That's lovely! Tell me more or switch to the Diary page.";
+                songs.style.display = "none";
             }
         }
-    </script>
 
+        // LIVE CLOCK
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+    </script>
 </body>
 </html>
