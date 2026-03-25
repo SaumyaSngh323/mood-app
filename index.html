@@ -5,28 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lost in Aesthetic</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Poppins:wght@300&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="home-bg">
 
     <nav class="navbar">
         <button onclick="showPage('home')">🌸 Home</button>
         <button onclick="showPage('goals')">✨ Goals</button>
         <button onclick="showPage('weather')">☁️ Weather</button>
+        <button onclick="showPage('abroad')">✈️ Abroad</button>
     </nav>
 
     <div id="home" class="page active">
         <div class="container glass-premium">
-            <h1> Lost in the Aesthetic ✨</h1>
-            <p>How is your soul today?</p>
+            <h1>Lost in the Aesthetic ✨</h1>
+            <p id="text">How is your soul today?</p>
             <div class="moods">
                 <button onclick="setMood('soft')">Soft Girl</button>
                 <button onclick="setMood('classy')">Classy</button>
                 <button onclick="setMood('lively')">Lively</button>
             </div>
-            
-            <audio id="music" controls style="width: 100%; filter: invert(0.2);"></audio>
-            
+            <audio id="music" controls style="width: 100%; margin-top:10px;"></audio>
             <div class="chat-section">
                 <input type="text" id="userInput" placeholder="What's on your mind?">
                 <button onclick="talk()">Send</button>
@@ -37,26 +36,17 @@
 
     <div id="goals" class="page">
         <div class="container glass-premium">
-            <h2> My Goals & Needs </h2>
-            <div class="goals-list">
-                <div class="goal-item"><span>✈️</span> Study/Work Abroad Plan</div>
-                <div class="goal-item"><span>🧘</span> Focus & Wellness Routine</div>
-                <div class="goal-item"><span>💻</span> Premium Web Dev Project</div>
-            </div>
-            <p>Requirements for a peaceful life.</p>
+            <h2>My Goals</h2>
+            <div class="goal-item"><span>✈️</span> Study Abroad Prep</div>
+            <div class="goal-item"><span>💻</span> Full Stack Dev</div>
         </div>
     </div>
 
     <div id="weather" class="page">
         <div class="container glass-premium">
-            <h2> Aesthetic Forecast ☁️</h2>
-            <div class="weather-box">
-                <h3 id="currentCity">Mumbai</h3>
-                <p id="localTime">Dual Clock (IST / NYT)</p>
-                <h1 id="temperature">28°C</h1>
-                <p id="conditions">Mainly Classy & Sunny</p>
-            </div>
-            <p>Classy weather reports, everywhere you need them.</p>
+            <h2>Aesthetic Forecast</h2>
+            <h1 id="temperature">28°C</h1>
+            <p>Mainly Classy & Sunny</p>
         </div>
     </div>
 
