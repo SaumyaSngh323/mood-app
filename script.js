@@ -1,41 +1,47 @@
-// Multi-Page Navigation Logic
+// --- fixed PAGE SWITCHING Logic ---
 function showPage(pageId) {
-    // 1. Hide all pages
+    // 1. Find all sections that have the class "page"
     const pages = document.querySelectorAll('.page');
-    pages.forEach(p => p.classList.remove('active'));
     
-    // 2. Show the page that was clicked
-    document.getElementById(pageId).classList.add('active');
+    // 2. Hide all of them
+    pages.forEach(p => {
+        p.style.display = 'none'; // This hides the page completely
+        p.classList.remove('active'); // Extra protection
+    });
+    
+    // 3. Find the one specific page we clicked (like 'weather')
+    const clickedPage = document.getElementById(pageId);
+    
+    // 4. Show it
+    if (clickedPage) {
+        clickedPage.style.display = 'flex'; // Uses flex to center the content
+        clickedPage.classList.add('active'); // For the animation
+    }
 }
 
-// Interactive Mood/Background Logic
-function setMood(mood) {
+// --- fixed MOOD Logic (Matches your HTML Buttons) ---
+// Note: We are using a pseudo-3D parallax effect on the background image itself
+function setMood(moodType) {
     const body = document.body;
-    const text = document.getElementById("text");
+    const moodText = document.getElementById("text");
+    const container = document.querySelector(".container.glass-premium");
 
-    if (mood === 'soft') {
-        body.style.backdropFilter = "brightness(1) contrast(1)";
-        text.innerText = "Everything is Soft Girl Sweet ✨";
-    } else if (mood === 'classy') {
-        body.style.backdropFilter = "brightness(0.9) grayscale(0.2)";
-        text.innerText = "Keep it Classy, Keep it Quiet 🥂";
-    } else if (mood === 'lively') {
-        // Increases saturation to feel energetic
-        body.style.backdropFilter = "brightness(1.1) saturate(1.4)";
-        text.innerText = "Feeling Absolutely Lively! 🌸";
+    // Clean up old classes first
+    body.classList.remove('soft-girl', 'classy-look', 'lively-mood');
+
+    if (moodType === 'soft') {
+        body.classList.add('soft-girl'); // Adds soft blur to the mosaic
+        moodText.innerText = "Everything is Soft Girl Sweet ✨";
+    } else if (moodType === 'classy') {
+        body.classList.add('classy-look'); // Adds grayscale to the mosaic
+        moodText.innerText = "Keep it Classy, Keep it Quiet 🥂";
+    } else if (moodType === 'lively') {
+        body.classList.add('lively-mood'); // Adds saturation to the mosaic
+        moodText.innerText = "Feeling Absolutely Lively! 🌸";
     }
 }
 
-// Basic Audio Player Logic (Can use soundhelix or new links)
-function changeSong(songUrl) {
-    const music = document.getElementById("music");
-    if (music && songUrl !== "") {
-        music.src = songUrl;
-        music.play();
-    }
-}
-
-// Chat Box Logic (Matches HTML talk() function)
+// Basic Chat Logic (Matches your talk() function in HTML)
 function talk() {
     const input = document.getElementById("userInput").value;
     const replyText = document.getElementById("reply");
