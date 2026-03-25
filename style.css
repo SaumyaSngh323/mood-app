@@ -1,37 +1,46 @@
-* { margin: 0; padding: 0; box-sizing: border-box; transition: 0.5s; }
+/* --- PREMIUM 3D THEMES --- */
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background: url('https://i.postimg.cc/q73vY1Pj/aesthetic-mosaic.png') no-repeat center center fixed;
+/* CUTE PINK: Mesmerizing Silk & Petals */
+body.cute-theme {
+    background: url('https://images.unsplash.com/photo-1518131359043-409fde1fa9e3?auto=format&fit=crop&w=1920&q=100') no-repeat center center fixed;
     background-size: cover;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    color: #4a1d1d; /* Deep Espresso for readability */
 }
 
-/* Page Visibility */
-.page { display: none; width: 100%; height: 100%; justify-content: center; align-items: center; }
-.page.active { display: flex; }
+/* PREMIUM SILK: High-End Gold & Marble */
+body.classy-theme {
+    background: url('https://images.unsplash.com/photo-1513519245088-0e12902e35ca?auto=format&fit=crop&w=1920&q=100') no-repeat center center fixed;
+    background-size: cover;
+    color: #2c241e;
+}
 
-/* Navigation */
-.navbar { position: fixed; top: 0; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); width: 100%; text-align: center; padding: 10px; z-index: 1000; }
-.navbar button { background: none; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; }
+/* MIDNIGHT SKY: 3D Galaxy & Deep Aesthetic */
+body.dark-theme {
+    background: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=1920&q=100') no-repeat center center fixed;
+    background-size: cover;
+    color: #f0f0f0;
+}
 
-/* The Glass Box */
-.glass-premium {
-    background: rgba(255, 255, 255, 0.15);
+/* --- THE 3D GLASS BOX (The "Understand" Part) --- */
+.glass-box {
+    background: rgba(255, 255, 255, 0.15); /* Translucent glass */
+    backdrop-filter: blur(25px) saturate(180%); /* Mesmerizing blur */
+    -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Glass edge */
+    border-radius: 60px;
+    padding: 60px;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4); /* 3D Shadow depth */
+    transform: perspective(1000px) rotateX(2deg); /* 3D Tilt */
+    transition: transform 0.5s ease;
+}
+
+.glass-box:hover {
+    transform: perspective(1000px) rotateX(0deg) scale(1.02); /* Interactive feel */
+}
+
+/* Navbar update for Mesmerizing look */
+.navbar {
+    background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(15px);
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 40px;
-    border-radius: 30px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-
-/* Mood Filters for the Background */
-body.soft-bg { backdrop-filter: sepia(0.2) brightness(1.1); }
-body.classy-bg { backdrop-filter: grayscale(0.8) contrast(1.2); }
-body.lively-bg { backdrop-filter: saturate(2) brightness(1.1); }
-
-.goal-item { background: white; padding: 10px; margin: 10px; border-radius: 10px; display: flex; align-items: center; }
