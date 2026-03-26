@@ -1,115 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Premium Aesthetic Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: cover;
-            background-position: center;
-            transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
-            /* DEFAULT: 3D Glossy Bubbles */
-            background-image: url('https://images.unsplash.com/photo-1635326444812-7067d51240a2?q=80&w=2574&auto=format&fit=crop'); 
-        }
-
-        /* 3D POP-OUT EFFECT */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(25px);
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.2);
-            padding: 40px;
-            width: 90%; max-width: 600px;
-            color: white;
-            text-align: center;
-            transform: perspective(1000px) rotateX(2deg);
-        }
-
-        /* WIDGETS SECTION */
-        .widgets {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;
-        }
-        .widget {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px; border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.9rem;
-        }
-
-        input {
-            width: 100%; padding: 15px; border-radius: 15px; border: none;
-            background: rgba(255, 255, 255, 0.1); color: white; margin: 20px 0;
-            outline: none; border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .premium-btn {
-            background: white; color: black; padding: 12px 40px;
-            border-radius: 50px; border: none; font-weight: 600; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); transition: 0.3s;
-        }
-        .premium-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(255,255,255,0.3); }
-
-        iframe { border-radius: 20px; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Mood Web</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
-<body id="bg">
+<body>
+  <!-- Background Photo -->
+  <div id="bg-container"></div>
 
-    <div class="glass-card">
-        <div class="widgets">
-            <div class="widget">🕒 <span id="clock">00:00:00</span></div>
-            <div class="widget">☁️ Weather: 28°C (Delhi)</div>
-            <div class="widget">📅 Notes: Prep for JEE April</div>
-            <div class="widget">🌍 London: <span id="londonTime">00:00</span></div>
-        </div>
+  <!-- Theme Selector -->
+  <div class="theme-selector">
+    <button data-theme="cute">Cute</button>
+    <button data-theme="classy">Classy</button>
+    <button data-theme="dark">Dark</button>
+  </div>
 
-        <h1>How was your day?</h1>
-        <input type="text" id="moodInput" placeholder="Try 'cute', 'classy', or 'dark'...">
-        <button onclick="updateMood()" class="premium-btn">Set the Vibe</button>
-        
-        <p id="msg" style="margin-top: 15px; font-weight: 300;"></p>
-        <div id="player"></div>
-    </div>
+  <!-- 3D Bubble Menu -->
+  <div class="bubble-menu">
+    <a href="mood.html" class="bubble">Mood</a>
+    <a href="weather.html" class="bubble">Weather</a>
+    <a href="songs.html" class="bubble">Songs</a>
+    <a href="notes.html" class="bubble">Notes</a>
+    <a href="calendar.html" class="bubble">Calendar</a>
+    <a href="about.html" class="bubble">About</a>
+  </div>
 
-    <script>
-        // CLOCK LOGIC
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString();
-            document.getElementById('londonTime').innerText = new Date().toLocaleTimeString('en-GB', {timeZone: 'Europe/London', hour: '2-digit', minute:'2-digit'});
-        }, 1000);
-
-        // THEME & MUSIC LOGIC
-        function updateMood() {
-            const val = document.getElementById('moodInput').value.toLowerCase();
-            const bg = document.getElementById('bg');
-            const player = document.getElementById('player');
-            const msg = document.getElementById('msg');
-
-            if (val.includes("cute")) {
-                bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1635326444812-7067d51240a2?q=80&w=2574&auto=format&fit=crop')"; // 3D Bubbles
-                msg.innerText = "Sweet vibe! Taylor Swift playing... ✨";
-                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/1BxfuRmsmsOeoFLvC7L61S" width="100%" height="152" frameBorder="0" allow="autoplay; encrypted-media;"></iframe>`;
-
-            } else if (val.includes("classy")) {
-                bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2670&auto=format&fit=crop')"; // Premium Dark Silk/Room vibe
-                msg.innerText = "Rich and elegant. Ed Sheeran's best for you. 🍷";
-                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/0tgVpS3mghpBozvYvRPS6u" width="100%" height="152" frameBorder="0" allow="autoplay; encrypted-media;"></iframe>`;
-
-            } else if (val.includes("dark")) {
-                bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2671&auto=format&fit=crop')"; // 3D Night/Galaxy
-                msg.innerText = "The shadows are calling... 🌙";
-                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/5z9S9u0VvVfB4Wd9tPto2n" width="100%" height="152" frameBorder="0" allow="autoplay; encrypted-media;"></iframe>`;
-            }
-        }
-    </script>
+  <script src="js/main.js"></script>
 </body>
 </html>
