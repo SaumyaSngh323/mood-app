@@ -18,11 +18,12 @@
             background-position: center;
             background-attachment: fixed;
             transition: all 0.8s ease-in-out;
+            padding: 20px;
         }
 
-        /* THEME BACKGROUNDS */
+        /* THEME BACKGROUNDS - KEPT EXACTLY THE SAME */
         body.cute-mode { 
-            background-image: url('https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=2574&auto=format&fit=crop'); /* 3D Style Kitty Vibe */
+            background-image: url('https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=2574&auto=format&fit=crop'); 
             color: #ff69b4;
         }
         body.classy-mode { 
@@ -30,7 +31,7 @@
             color: #d4af37;
         }
         body.dark-mode { 
-            background-image: url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop'); /* Your Original Dark 3D Geometry */
+            background-image: url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop'); 
             color: #ffffff;
         }
 
@@ -42,12 +43,10 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 50px 100px rgba(0,0,0,0.4);
             padding: 30px;
-            width: 95%; max-width: 800px;
+            width: 100%; max-width: 850px;
             display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-            transform: perspective(1000px) rotateX(1deg);
         }
 
-        /* WIDGETS */
         .widget-box {
             background: rgba(255, 255, 255, 0.15);
             padding: 15px; border-radius: 20px;
@@ -55,28 +54,32 @@
             margin-bottom: 10px;
         }
 
-        h2 { font-size: 1.2rem; margin-bottom: 10px; }
+        h2 { font-size: 1.1rem; margin-bottom: 8px; }
         
         textarea {
-            width: 100%; height: 100px; background: rgba(0,0,0,0.1);
+            width: 100%; height: 80px; background: rgba(0,0,0,0.1);
             border: none; border-radius: 15px; padding: 10px; color: inherit;
             resize: none; font-family: inherit;
         }
 
         .btn {
-            padding: 10px; border-radius: 50px; border: 1px solid currentColor;
+            padding: 8px; border-radius: 50px; border: 1px solid currentColor;
             background: transparent; color: inherit; cursor: pointer; font-weight: 600;
-            width: 100%; margin-top: 5px;
+            width: 100%; margin-top: 5px; transition: 0.3s;
         }
+        .btn:hover { background: rgba(255,255,255,0.2); }
 
         input {
             width: 100%; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3);
             background: rgba(255,255,255,0.1); color: inherit; outline: none;
         }
 
-        iframe { border-radius: 15px; width: 100%; height: 80px; margin-top: 10px; }
+        /* FOCUS & GOALS STYLING */
+        #timer { font-size: 1.5rem; font-weight: 600; margin: 5px 0; }
+        .goal-item { display: flex; align-items: center; gap: 10px; margin-top: 5px; font-size: 0.9rem; }
+        .goal-item input[type="checkbox"] { width: auto; }
 
-        @media (max-width: 600px) { .glass-card { grid-template-columns: 1fr; } }
+        @media (max-width: 700px) { .glass-card { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body id="mainBody" class="cute-mode">
@@ -85,21 +88,27 @@
         <div class="left-panel">
             <div class="widget-box">
                 <h2>🕒 <span id="time">00:00:00</span></h2>
-                <p>📅 <span id="date">Loading...</span></p>
                 <p>🌍 London: <span id="london">00:00</span></p>
+                <p>📅 <span id="date">Loading...</span></p>
             </div>
 
             <div class="widget-box">
                 <h2>📔 Digital Diary</h2>
-                <textarea id="diary" placeholder="How was your day? Write here..."></textarea>
-                <button class="btn" onclick="saveDiary()">Save to Memory</button>
+                <textarea id="diary" placeholder="Write here..."></textarea>
+                <button class="btn" onclick="saveDiary()">Save Diary</button>
+            </div>
+
+            <div class="widget-box">
+                <h2>🎯 Focus Timer</h2>
+                <div id="timer">25:00</div>
+                <button class="btn" onclick="startTimer()">Start Focus Mode</button>
             </div>
         </div>
 
         <div class="right-panel">
             <div class="widget-box">
-                <h2>🌡️ Weather: 28°C (Delhi)</h2>
-                <div class="theme-selector" style="display:flex; gap:5px; margin-top:5px;">
+                <h2>🌡️ Weather: 28°C</h2>
+                <div style="display:flex; gap:5px;">
                     <button class="btn" onclick="setTheme('cute')">Cute</button>
                     <button class="btn" onclick="setTheme('classy')">Classy</button>
                     <button class="btn" onclick="setTheme('dark')">Dark</button>
@@ -108,53 +117,74 @@
 
             <div class="widget-box">
                 <h2>🎵 Music System</h2>
-                <input type="text" id="moodInput" placeholder="Enter vibe (e.g. Taylor)...">
+                <input type="text" id="moodInput" placeholder="Enter vibe...">
                 <button class="btn" onclick="handleMood()">Set Mood</button>
                 <div id="musicPlayer"></div>
+            </div>
+
+            <div class="widget-box">
+                <h2>✅ Today's Goals</h2>
+                <div id="goalList">
+                    <div class="goal-item"><input type="checkbox"> Study for JEE</div>
+                    <div class="goal-item"><input type="checkbox"> Computer Science Prep</div>
+                    <div class="goal-item"><input type="checkbox"> Web Dev Practice</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // CLOCK & DATE
+        // CLOCKS
         setInterval(() => {
-            const now = new Date();
-            document.getElementById('time').innerText = now.toLocaleTimeString();
-            document.getElementById('date').innerText = now.toDateString();
+            document.getElementById('time').innerText = new Date().toLocaleTimeString();
             document.getElementById('london').innerText = new Date().toLocaleTimeString('en-GB', {timeZone: 'Europe/London', hour: '2-digit', minute:'2-digit'});
+            document.getElementById('date').innerText = new Date().toDateString();
         }, 1000);
 
         // THEMES
         function setTheme(type) {
-            const body = document.getElementById('mainBody');
-            body.className = type + '-mode';
+            document.getElementById('mainBody').className = type + '-mode';
         }
 
-        // MOOD & MUSIC LOGIC
+        // MOOD & MUSIC
         function handleMood() {
             const val = document.getElementById('moodInput').value.toLowerCase();
             const player = document.getElementById('musicPlayer');
-            
             if(val.includes("cute") || val.includes("taylor")) {
                 setTheme('cute');
-                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/1BxfuRmsmsOeoFLvC7L61S" frameBorder="0" allow="encrypted-media"></iframe>`;
+                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/1BxfuRmsmsOeoFLvC7L61S" frameBorder="0"></iframe>`;
             } else if(val.includes("classy") || val.includes("ed")) {
                 setTheme('classy');
-                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/0tgVpS3mghpBozvYvRPS6u" frameBorder="0" allow="encrypted-media"></iframe>`;
+                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/0tgVpS3mghpBozvYvRPS6u" frameBorder="0"></iframe>`;
             } else if(val.includes("dark") || val.includes("arijit")) {
                 setTheme('dark');
-                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/5z9S9u0VvVfB4Wd9tPto2n" frameBorder="0" allow="encrypted-media"></iframe>`;
+                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/5z9S9u0VvVfB4Wd9tPto2n" frameBorder="0"></iframe>`;
             }
         }
 
-        // DIARY SAVE
+        // DIARY
         function saveDiary() {
-            const text = document.getElementById('diary').value;
-            localStorage.setItem('userDiary', text);
-            alert("Entry saved in your browser!");
+            localStorage.setItem('userDiary', document.getElementById('diary').value);
+            alert("Saved!");
         }
 
-        // Load diary on startup
+        // FOCUS TIMER LOGIC
+        let timerInstance;
+        function startTimer() {
+            clearInterval(timerInstance);
+            let time = 25 * 60;
+            const display = document.getElementById('timer');
+            timerInstance = setInterval(() => {
+                let mins = Math.floor(time / 60);
+                let secs = time % 60;
+                display.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                if (--time < 0) {
+                    clearInterval(timerInstance);
+                    alert("Focus session complete! Take a break.");
+                }
+            }, 1000);
+        }
+
         window.onload = () => {
             document.getElementById('diary').value = localStorage.getItem('userDiary') || "";
         }
