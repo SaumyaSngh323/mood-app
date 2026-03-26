@@ -8,7 +8,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; background-attachment: fixed; transition: 0.8s; padding: 20px; }
         
-        /* THEMES - KEPT EXACTLY AS YOU LOVE THEM */
+        /* THEMES - SAVED AS YOU REQUESTED */
         body.cute-mode { background-image: url('https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=2574&auto=format&fit=crop'); color: #ff69b4; }
         body.classy-mode { background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2670&auto=format&fit=crop'); color: #d4af37; }
         body.dark-mode { background-image: url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop'); color: #ffffff; }
@@ -18,6 +18,10 @@
         input, textarea, input[type="number"] { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 10px; color: inherit; font-family: inherit; outline: none; margin-bottom: 5px; }
         .btn { padding: 10px; border-radius: 50px; border: 1px solid currentColor; background: transparent; color: inherit; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; margin-top: 5px; }
         .btn:hover { background: rgba(255,255,255,0.2); }
+        
+        #diaryList, #goalList { max-height: 100px; overflow-y: auto; margin-top: 10px; text-align: left; scrollbar-width: thin; }
+        .diary-entry { font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 5px 0; }
+        
         @media (max-width: 700px) { .glass-card { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -33,9 +37,9 @@
             
             <div class="widget-box">
                 <h2>📔 Digital Diary</h2>
-                <textarea id="diary" placeholder="Type your thoughts..."></textarea>
-                <button class="btn" onclick="saveDiary()">Save Diary</button>
-            </div>
+                <textarea id="diary" placeholder="Save a memory..."></textarea>
+                <button class="btn" onclick="saveDiary()">Save Entry</button>
+                <div id="diaryList"></div> </div>
             
             <div class="widget-box">
                 <h2>🎯 Focus Timer</h2>
@@ -71,14 +75,14 @@
                     <input type="text" id="newGoal" placeholder="Add goal...">
                     <button class="btn" style="width:40px; margin:0;" onclick="addGoal()">+</button>
                 </div>
-                <div id="goalList" style="margin-top: 10px; text-align: left; max-height: 80px; overflow-y: auto;"></div>
+                <div id="goalList"></div>
                 <button class="btn" style="font-size: 0.7rem; padding: 5px;" onclick="clearGoals()">Clear All</button>
             </div>
         </div>
     </div>
 
     <script>
-        // CLOCKS
+        // LIVE CLOCKS
         setInterval(() => {
             document.getElementById('time').innerText = new Date().toLocaleTimeString();
             document.getElementById('london').innerText = new Date().toLocaleTimeString('en-GB', {timeZone: 'Europe/London', hour: '2-digit', minute:'2-digit'});
@@ -100,17 +104,30 @@
 
             if(file) {
                 audio = new Audio(file);
-                audio.play().catch(() => { status.innerText = "⚠️ Click screen first!"; });
+                audio.play().catch(() => { status.innerText = "⚠️ Tap screen first!"; });
                 status.innerText = "Playing: " + file;
             }
         }
 
         function stopMusic() {
-            if(audio) {
-                audio.pause();
-                audio.currentTime = 0;
-                document.getElementById('musicStatus').innerText = "Music Stopped";
-            }
+            if(audio) { audio.pause(); audio.currentTime = 0; document.getElementById('musicStatus').innerText = "Music Stopped"; }
+        }
+
+        // DIARY LOGIC (NEW HISTORY FEATURE)
+        function saveDiary() { 
+            const entry = document.getElementById('diary').value;
+            if(!entry) return;
+            let history = JSON.parse(localStorage.getItem('diaryHistory')) || [];
+            const timeStamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            history.unshift(timeStamp + ": " + entry);
+            localStorage.setItem('diaryHistory', JSON.stringify(history));
+            document.getElementById('diary').value = '';
+            showHistory();
+        }
+
+        function showHistory() {
+            const history = JSON.parse(localStorage.getItem('diaryHistory')) || [];
+            document.getElementById('diaryList').innerHTML = history.map(item => `<div class="diary-entry">${item}</div>`).join('');
         }
 
         // GOALS LOGIC
@@ -124,10 +141,6 @@
             document.getElementById('newGoal').value = '';
         }
         function clearGoals() { document.getElementById('goalList').innerHTML = ''; }
-
-        // DIARY LOGIC
-        function saveDiary() { localStorage.setItem('diary', document.getElementById('diary').value); alert("Entry Saved!"); }
-        window.onload = () => { document.getElementById('diary').value = localStorage.getItem('diary') || ""; }
 
         // TIMER LOGIC
         let countdown;
@@ -149,6 +162,9 @@
                 display.innerText = document.getElementById('focusTime').value + ":00";
             }
         }
+
+        // LOAD SAVED DATA ON OPEN
+        window.onload = () => { showHistory(); }
     </script>
 </body>
 </html>
