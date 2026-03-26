@@ -1,46 +1,49 @@
-/* --- PREMIUM 3D THEMES --- */
-
-/* CUTE PINK: Mesmerizing Silk & Petals */
-body.cute-theme {
-    background: url('https://images.unsplash.com/photo-1518131359043-409fde1fa9e3?auto=format&fit=crop&w=1920&q=100') no-repeat center center fixed;
-    background-size: cover;
-    color: #4a1d1d; /* Deep Espresso for readability */
+:root {
+    --glass: rgba(255, 255, 255, 0.1);
+    --border: rgba(255, 255, 255, 0.2);
 }
 
-/* PREMIUM SILK: High-End Gold & Marble */
-body.classy-theme {
-    background: url('https://images.unsplash.com/photo-1513519245088-0e12902e35ca?auto=format&fit=crop&w=1920&q=100') no-repeat center center fixed;
-    background-size: cover;
-    color: #2c241e;
+body {
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
 }
 
-/* MIDNIGHT SKY: 3D Galaxy & Deep Aesthetic */
-body.dark-theme {
-    background: url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?auto=format&fit=crop&w=1920&q=100') no-repeat center center fixed;
-    background-size: cover;
-    color: #f0f0f0;
+/* 3D Glassmorphism Card */
+.mood-container {
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 40px;
+    box-shadow: 0 25px 45px rgba(0,0,0,0.2), inset 0 0 15px var(--border); /* Inner glow for 3D depth */
+    text-align: center;
+    width: 400px;
 }
 
-/* --- THE 3D GLASS BOX (The "Understand" Part) --- */
-.glass-box {
-    background: rgba(255, 255, 255, 0.15); /* Translucent glass */
-    backdrop-filter: blur(25px) saturate(180%); /* Mesmerizing blur */
-    -webkit-backdrop-filter: blur(25px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Glass edge */
-    border-radius: 60px;
-    padding: 60px;
-    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4); /* 3D Shadow depth */
-    transform: perspective(1000px) rotateX(2deg); /* 3D Tilt */
-    transition: transform 0.5s ease;
+/* Theme Visuals */
+.theme-cute {
+    background: radial-gradient(circle at top left, #ff9a9e, #fad0c4, #ffd1ff);
 }
 
-.glass-box:hover {
-    transform: perspective(1000px) rotateX(0deg) scale(1.02); /* Interactive feel */
+.theme-classy {
+    background: linear-gradient(135deg, #c3a492 0%, #242424 100%);
+    color: #f3e5ab;
 }
 
-/* Navbar update for Mesmerizing look */
-.navbar {
+.theme-dark {
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    box-shadow: inset 0 0 100px rgba(138, 43, 226, 0.2); /* Soft purple 3D glow */
+}
+
+input {
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(15px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 10px;
+    color: white;
+    margin-top: 20px;
 }
