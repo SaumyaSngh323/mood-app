@@ -2,69 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adwitiya's Personal Hub</title>
+    <title> Premium Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            transition: all 0.8s ease-in-out;
-            padding: 20px;
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            min-height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background-size: cover; 
+            background-position: center; 
+            background-attachment: fixed; 
+            transition: 0.8s; 
+            padding: 20px; 
         }
-
-        /* THEMES */
+        
+        /* THEMES - SAVED AS YOU REQUESTED */
         body.cute-mode { background-image: url('https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=2574&auto=format&fit=crop'); color: #ff69b4; }
         body.classy-mode { background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2670&auto=format&fit=crop'); color: #d4af37; }
         body.dark-mode { background-image: url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop'); color: #ffffff; }
 
-        /* GLASS CARD */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(30px);
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 50px 100px rgba(0,0,0,0.4);
-            padding: 30px;
-            width: 100%; max-width: 850px;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(30px); 
+            border-radius: 40px; 
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            padding: 30px; 
+            width: 100%; 
+            max-width: 850px; 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5); 
         }
-
-        .widget-box {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px; border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 10px;
-        }
-
-        h2 { font-size: 1.1rem; margin-bottom: 8px; }
         
-        textarea, input[type="text"], input[type="number"] {
-            width: 100%; background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; 
-            padding: 10px; color: inherit; font-family: inherit; outline: none;
+        .widget-box { 
+            background: rgba(255, 255, 255, 0.15); 
+            padding: 15px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            margin-bottom: 10px; 
         }
-
-        .btn {
-            padding: 8px; border-radius: 50px; border: 1px solid currentColor;
-            background: transparent; color: inherit; cursor: pointer; font-weight: 600;
-            width: 100%; margin-top: 5px; transition: 0.3s;
+        
+        input, textarea, input[type="number"] { 
+            width: 100%; 
+            background: rgba(255,255,255,0.1); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 12px; 
+            padding: 10px; 
+            color: inherit; 
+            font-family: inherit; 
+            outline: none; 
+            margin-bottom: 5px; 
         }
+        
+        .btn { 
+            padding: 10px; 
+            border-radius: 50px; 
+            border: 1px solid currentColor; 
+            background: transparent; 
+            color: inherit; 
+            cursor: pointer; 
+            font-weight: 600; 
+            width: 100%; 
+            transition: 0.3s; 
+            margin-top: 5px; 
+        }
+        
         .btn:hover { background: rgba(255,255,255,0.2); }
-
-        /* GOAL LIST STYLES */
-        .goal-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
-        #goalList { text-align: left; max-height: 120px; overflow-y: auto; }
-        .goal-item { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; background: rgba(0,0,0,0.05); padding: 5px 10px; border-radius: 8px; }
-
+        
         @media (max-width: 700px) { .glass-card { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -73,124 +81,132 @@
     <div class="glass-card">
         <div class="left-panel">
             <div class="widget-box">
-                <h2>🕒 <span id="time">00:00:00</span></h2>
-                <p>🌍 London: <span id="london">00:00</span></p>
-                <p>📅 <span id="date">Loading...</span></p>
+                <h2 id="time">00:00:00</h2>
+                <p>London: <span id="london">00:00</span></p>
+                <p>March 26, 2026</p>
             </div>
-
+            
             <div class="widget-box">
                 <h2>📔 Digital Diary</h2>
-                <textarea id="diary" placeholder="Write about your day..."></textarea>
-                <button class="btn" onclick="saveDiary()">Save Entry</button>
+                <textarea id="diary" placeholder="Type your thoughts..."></textarea>
+                <button class="btn" onclick="saveDiary()">Save Diary</button>
             </div>
-
+            
             <div class="widget-box">
-                <h2>🎯 Focus Mode</h2>
-                <div style="display:flex; gap:10px; align-items: center;">
-                    <input type="number" id="focusTime" value="25" style="width: 60px;"> <span>mins</span>
-                </div>
-                <div id="timerDisplay" style="font-size: 1.5rem; font-weight: 600; margin: 5px 0;">25:00</div>
+                <h2>🎯 Focus Timer</h2>
+                <input type="number" id="focusTime" value="25" style="width: 70px;"> mins
+                <div id="timerDisplay" style="font-size: 1.5rem; font-weight: 600; margin-top: 5px;">25:00</div>
                 <button class="btn" id="timerBtn" onclick="toggleTimer()">Start Focus</button>
             </div>
         </div>
 
         <div class="right-panel">
             <div class="widget-box">
-                <h2>🌡️ Weather: 28°C</h2>
+                <h2>🌡️ Delhi: 28°C</h2>
                 <div style="display:flex; gap:5px;">
                     <button class="btn" onclick="setTheme('cute')">Cute</button>
                     <button class="btn" onclick="setTheme('classy')">Classy</button>
                     <button class="btn" onclick="setTheme('dark')">Dark</button>
                 </div>
             </div>
-
+            
             <div class="widget-box">
                 <h2>🎵 Music System</h2>
-                <input type="text" id="moodInput" placeholder="Enter vibe...">
-                <button class="btn" onclick="handleMood()">Set Mood</button>
-                <div id="musicPlayer"></div>
+                <input type="text" id="moodInput" placeholder="Type cute, classy, or dark...">
+                <button class="btn" onclick="handleMood()">Set Mood & Play</button>
+                <p id="musicStatus" style="font-size: 0.7rem; margin-top: 5px; opacity: 0.8;"></p>
             </div>
-
+            
             <div class="widget-box">
-                <h2>✅ Today's Goals</h2>
-                <div class="goal-input-group">
+                <h2>✅ My Goals</h2>
+                <div style="display:flex; gap:5px;">
                     <input type="text" id="newGoal" placeholder="Add a goal...">
-                    <button class="btn" style="width: 40px; margin:0;" onclick="addGoal()">+</button>
+                    <button class="btn" style="width:40px; margin:0;" onclick="addGoal()">+</button>
                 </div>
-                <div id="goalList"></div>
+                <div id="goalList" style="margin-top: 10px; text-align: left;"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // CLOCKS
+        // LIVE CLOCKS
         setInterval(() => {
             document.getElementById('time').innerText = new Date().toLocaleTimeString();
             document.getElementById('london').innerText = new Date().toLocaleTimeString('en-GB', {timeZone: 'Europe/London', hour: '2-digit', minute:'2-digit'});
-            document.getElementById('date').innerText = new Date().toDateString();
         }, 1000);
 
         function setTheme(type) { document.getElementById('mainBody').className = type + '-mode'; }
 
+        // MUSIC ENGINE - USES YOUR UPLOADED FILES
+        let audio;
         function handleMood() {
             const val = document.getElementById('moodInput').value.toLowerCase();
-            const player = document.getElementById('musicPlayer');
-            let track = val.includes("cute") ? "4" : val.includes("classy") ? "5" : "6";
-            player.innerHTML = `<iframe src="http://googleusercontent.com/spotify.com/${track}" frameBorder="0"></iframe>`;
-            if(val.includes("cute")) setTheme('cute');
-            if(val.includes("classy")) setTheme('classy');
-            if(val.includes("dark")) setTheme('dark');
-        }
+            const status = document.getElementById('musicStatus');
+            
+            if(audio) { 
+                audio.pause(); 
+                audio.currentTime = 0; 
+            }
 
-        // CUSTOM GOALS LOGIC
-        function addGoal() {
-            const goalText = document.getElementById('newGoal').value;
-            if (!goalText) return;
-            const container = document.getElementById('goalList');
-            const div = document.createElement('div');
-            div.className = 'goal-item';
-            div.innerHTML = `<input type="checkbox"> <span>${goalText}</span>`;
-            container.appendChild(div);
-            document.getElementById('newGoal').value = '';
-        }
+            let file = "";
+            if(val.includes("cute")) { file = "cute.mp3"; setTheme('cute'); }
+            else if(val.includes("classy")) { file = "classy.mp3"; setTheme('classy'); }
+            else if(val.includes("dark")) { file = "dark.mp3"; setTheme('dark'); }
 
-        // ADJUSTABLE TIMER LOGIC
-        let countdown;
-        let isRunning = false;
-        function toggleTimer() {
-            const btn = document.getElementById('timerBtn');
-            const display = document.getElementById('timerDisplay');
-            if (isRunning) {
-                clearInterval(countdown);
-                btn.innerText = "Start Focus";
-                isRunning = false;
-            } else {
-                let minutes = document.getElementById('focusTime').value;
-                let seconds = minutes * 60;
-                isRunning = true;
-                btn.innerText = "Stop";
-                countdown = setInterval(() => {
-                    seconds--;
-                    let m = Math.floor(seconds / 60);
-                    let s = seconds % 60;
-                    display.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
-                    if (seconds <= 0) {
-                        clearInterval(countdown);
-                        alert("Time's up! Great work.");
-                        btn.innerText = "Start Focus";
-                        isRunning = false;
-                    }
-                }, 1000);
+            if(file) {
+                audio = new Audio(file);
+                audio.play().catch(() => { status.innerText = "⚠️ Tap the screen once, then try again!"; });
+                status.innerText = "Playing: " + file;
             }
         }
 
-        function saveDiary() {
-            localStorage.setItem('userDiary', document.getElementById('diary').value);
-            alert("Diary Saved!");
+        // GOALS ENGINE
+        function addGoal() {
+            const g = document.getElementById('newGoal').value;
+            if(!g) return;
+            const div = document.createElement('div');
+            div.style.marginBottom = "5px";
+            div.innerHTML = `<input type="checkbox"> <span>${g}</span>`;
+            document.getElementById('goalList').appendChild(div);
+            document.getElementById('newGoal').value = '';
         }
 
-        window.onload = () => {
-            document.getElementById('diary').value = localStorage.getItem('userDiary') || "";
+        // DIARY ENGINE
+        function saveDiary() { 
+            localStorage.setItem('diary', document.getElementById('diary').value); 
+            alert("Entry Saved!"); 
+        }
+        
+        window.onload = () => { 
+            document.getElementById('diary').value = localStorage.getItem('diary') || ""; 
+        }
+
+        // FOCUS TIMER ENGINE
+        let countdown;
+        function toggleTimer() {
+            let s = document.getElementById('focusTime').value * 60;
+            const btn = document.getElementById('timerBtn');
+            const display = document.getElementById('timerDisplay');
+            
+            if(btn.innerText === "Start Focus") {
+                clearInterval(countdown);
+                btn.innerText = "Stop";
+                countdown = setInterval(() => {
+                    s--;
+                    let mins = Math.floor(s/60);
+                    let secs = s%60;
+                    display.innerText = mins + ":" + (secs < 10 ? '0' : '') + secs;
+                    if(s <= 0) { 
+                        clearInterval(countdown); 
+                        alert("Focus time finished!"); 
+                        btn.innerText = "Start Focus"; 
+                    }
+                }, 1000);
+            } else {
+                clearInterval(countdown);
+                btn.innerText = "Start Focus";
+                display.innerText = document.getElementById('focusTime').value + ":00";
+            }
         }
     </script>
 </body>
