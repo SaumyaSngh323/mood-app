@@ -21,21 +21,12 @@
             padding: 20px;
         }
 
-        /* THEME BACKGROUNDS - KEPT EXACTLY THE SAME */
-        body.cute-mode { 
-            background-image: url('https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=2574&auto=format&fit=crop'); 
-            color: #ff69b4;
-        }
-        body.classy-mode { 
-            background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2670&auto=format&fit=crop'); 
-            color: #d4af37;
-        }
-        body.dark-mode { 
-            background-image: url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop'); 
-            color: #ffffff;
-        }
+        /* THEMES */
+        body.cute-mode { background-image: url('https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=2574&auto=format&fit=crop'); color: #ff69b4; }
+        body.classy-mode { background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2670&auto=format&fit=crop'); color: #d4af37; }
+        body.dark-mode { background-image: url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop'); color: #ffffff; }
 
-        /* 3D GLASS CARD */
+        /* GLASS CARD */
         .glass-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(30px);
@@ -56,10 +47,10 @@
 
         h2 { font-size: 1.1rem; margin-bottom: 8px; }
         
-        textarea {
-            width: 100%; height: 80px; background: rgba(0,0,0,0.1);
-            border: none; border-radius: 15px; padding: 10px; color: inherit;
-            resize: none; font-family: inherit;
+        textarea, input[type="text"], input[type="number"] {
+            width: 100%; background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; 
+            padding: 10px; color: inherit; font-family: inherit; outline: none;
         }
 
         .btn {
@@ -69,15 +60,10 @@
         }
         .btn:hover { background: rgba(255,255,255,0.2); }
 
-        input {
-            width: 100%; padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.1); color: inherit; outline: none;
-        }
-
-        /* FOCUS & GOALS STYLING */
-        #timer { font-size: 1.5rem; font-weight: 600; margin: 5px 0; }
-        .goal-item { display: flex; align-items: center; gap: 10px; margin-top: 5px; font-size: 0.9rem; }
-        .goal-item input[type="checkbox"] { width: auto; }
+        /* GOAL LIST STYLES */
+        .goal-input-group { display: flex; gap: 5px; margin-bottom: 10px; }
+        #goalList { text-align: left; max-height: 120px; overflow-y: auto; }
+        .goal-item { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; background: rgba(0,0,0,0.05); padding: 5px 10px; border-radius: 8px; }
 
         @media (max-width: 700px) { .glass-card { grid-template-columns: 1fr; } }
     </style>
@@ -94,14 +80,17 @@
 
             <div class="widget-box">
                 <h2>📔 Digital Diary</h2>
-                <textarea id="diary" placeholder="Write here..."></textarea>
-                <button class="btn" onclick="saveDiary()">Save Diary</button>
+                <textarea id="diary" placeholder="Write about your day..."></textarea>
+                <button class="btn" onclick="saveDiary()">Save Entry</button>
             </div>
 
             <div class="widget-box">
-                <h2>🎯 Focus Timer</h2>
-                <div id="timer">25:00</div>
-                <button class="btn" onclick="startTimer()">Start Focus Mode</button>
+                <h2>🎯 Focus Mode</h2>
+                <div style="display:flex; gap:10px; align-items: center;">
+                    <input type="number" id="focusTime" value="25" style="width: 60px;"> <span>mins</span>
+                </div>
+                <div id="timerDisplay" style="font-size: 1.5rem; font-weight: 600; margin: 5px 0;">25:00</div>
+                <button class="btn" id="timerBtn" onclick="toggleTimer()">Start Focus</button>
             </div>
         </div>
 
@@ -124,11 +113,11 @@
 
             <div class="widget-box">
                 <h2>✅ Today's Goals</h2>
-                <div id="goalList">
-                    <div class="goal-item"><input type="checkbox"> Study for JEE</div>
-                    <div class="goal-item"><input type="checkbox"> Computer Science Prep</div>
-                    <div class="goal-item"><input type="checkbox"> Web Dev Practice</div>
+                <div class="goal-input-group">
+                    <input type="text" id="newGoal" placeholder="Add a goal...">
+                    <button class="btn" style="width: 40px; margin:0;" onclick="addGoal()">+</button>
                 </div>
+                <div id="goalList"></div>
             </div>
         </div>
     </div>
@@ -141,48 +130,63 @@
             document.getElementById('date').innerText = new Date().toDateString();
         }, 1000);
 
-        // THEMES
-        function setTheme(type) {
-            document.getElementById('mainBody').className = type + '-mode';
-        }
+        function setTheme(type) { document.getElementById('mainBody').className = type + '-mode'; }
 
-        // MOOD & MUSIC
         function handleMood() {
             const val = document.getElementById('moodInput').value.toLowerCase();
             const player = document.getElementById('musicPlayer');
-            if(val.includes("cute") || val.includes("taylor")) {
-                setTheme('cute');
-                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/1BxfuRmsmsOeoFLvC7L61S" frameBorder="0"></iframe>`;
-            } else if(val.includes("classy") || val.includes("ed")) {
-                setTheme('classy');
-                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/0tgVpS3mghpBozvYvRPS6u" frameBorder="0"></iframe>`;
-            } else if(val.includes("dark") || val.includes("arijit")) {
-                setTheme('dark');
-                player.innerHTML = `<iframe src="https://open.spotify.com/embed/track/5z9S9u0VvVfB4Wd9tPto2n" frameBorder="0"></iframe>`;
+            let track = val.includes("cute") ? "4" : val.includes("classy") ? "5" : "6";
+            player.innerHTML = `<iframe src="http://googleusercontent.com/spotify.com/${track}" frameBorder="0"></iframe>`;
+            if(val.includes("cute")) setTheme('cute');
+            if(val.includes("classy")) setTheme('classy');
+            if(val.includes("dark")) setTheme('dark');
+        }
+
+        // CUSTOM GOALS LOGIC
+        function addGoal() {
+            const goalText = document.getElementById('newGoal').value;
+            if (!goalText) return;
+            const container = document.getElementById('goalList');
+            const div = document.createElement('div');
+            div.className = 'goal-item';
+            div.innerHTML = `<input type="checkbox"> <span>${goalText}</span>`;
+            container.appendChild(div);
+            document.getElementById('newGoal').value = '';
+        }
+
+        // ADJUSTABLE TIMER LOGIC
+        let countdown;
+        let isRunning = false;
+        function toggleTimer() {
+            const btn = document.getElementById('timerBtn');
+            const display = document.getElementById('timerDisplay');
+            if (isRunning) {
+                clearInterval(countdown);
+                btn.innerText = "Start Focus";
+                isRunning = false;
+            } else {
+                let minutes = document.getElementById('focusTime').value;
+                let seconds = minutes * 60;
+                isRunning = true;
+                btn.innerText = "Stop";
+                countdown = setInterval(() => {
+                    seconds--;
+                    let m = Math.floor(seconds / 60);
+                    let s = seconds % 60;
+                    display.innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+                    if (seconds <= 0) {
+                        clearInterval(countdown);
+                        alert("Time's up! Great work.");
+                        btn.innerText = "Start Focus";
+                        isRunning = false;
+                    }
+                }, 1000);
             }
         }
 
-        // DIARY
         function saveDiary() {
             localStorage.setItem('userDiary', document.getElementById('diary').value);
-            alert("Saved!");
-        }
-
-        // FOCUS TIMER LOGIC
-        let timerInstance;
-        function startTimer() {
-            clearInterval(timerInstance);
-            let time = 25 * 60;
-            const display = document.getElementById('timer');
-            timerInstance = setInterval(() => {
-                let mins = Math.floor(time / 60);
-                let secs = time % 60;
-                display.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-                if (--time < 0) {
-                    clearInterval(timerInstance);
-                    alert("Focus session complete! Take a break.");
-                }
-            }, 1000);
+            alert("Diary Saved!");
         }
 
         window.onload = () => {
