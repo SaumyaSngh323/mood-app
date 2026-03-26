@@ -1,7 +1,7 @@
 /* Reset */
-* { margin:0; padding:0; box-sizing:border-box; font-family: sans-serif; }
+* { margin:0; padding:0; box-sizing:border-box; font-family: 'Arial', sans-serif; }
 
-/* Background Container */
+/* Background */
 #bg-container {
   position: fixed;
   top:0; left:0;
@@ -10,6 +10,24 @@
   background-position: center;
   transition: background-image 0.5s ease-in-out;
   z-index: -1;
+}
+
+/* Theme Selector */
+.theme-selector {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.theme-selector button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(5px);
 }
 
 /* Bubble Menu */
@@ -23,12 +41,12 @@
 
 .bubble {
   display: inline-block;
-  padding: 1.5rem 2rem;
+  padding: 2rem 2rem;
   border-radius: 50%;
   background: rgba(255,255,255,0.2);
   backdrop-filter: blur(10px);
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   text-decoration: none;
   text-align: center;
   transition: transform 0.3s, box-shadow 0.3s;
@@ -40,13 +58,10 @@
   box-shadow: 0 0 30px rgba(255,255,255,0.5);
 }
 
-/* Theme Colors / Backgrounds */
-body.theme-cute #bg-container {
-  background-image: url('../assets/images/cute.jpg');
-}
-body.theme-classy #bg-container {
-  background-image: url('../assets/images/classy.jpg');
-}
-body.theme-dark #bg-container {
-  background-image: url('../assets/images/dark.jpg');
-}
+/* Theme Backgrounds */
+body.theme-cute #bg-container { background-image: url('../assets/images/cute.jpg'); }
+body.theme-classy #bg-container { background-image: url('../assets/images/classy.jpg'); }
+body.theme-dark #bg-container { background-image: url('../assets/images/dark.jpg'); }
+
+/* Page Content Common Style */
+body, html { height: 100%; width: 100%; }
