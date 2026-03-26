@@ -16,128 +16,110 @@
             justify-content: center;
             background-size: cover;
             background-position: center;
-            transition: 1s ease-in-out;
-            /* CUTE THEME: 3D Glossy Bubbles */
+            background-attachment: fixed;
+            transition: background 1s ease, color 0.5s ease;
+            /* DEFAULT CUTE THEME */
             background-image: url('https://images.unsplash.com/photo-1635326444812-7067d51240a2?q=80&w=2574&auto=format&fit=crop');
+            color: #333; 
         }
 
-        /* PREMIUM 3D POP-OUT CARD */
+        /* DARK THEME TEXT OVERRIDE */
+        body.dark-mode { color: #ffffff !important; }
+
         .glass-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(25px);
             border-radius: 40px;
             border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.2);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.3);
             padding: 40px;
-            width: 90%; max-width: 650px;
-            color: white;
+            width: 90%; max-width: 600px;
             text-align: center;
-            transform: perspective(1000px) rotateX(2deg);
+            transform: perspective(1000px) rotateX(1deg);
         }
 
-        /* WIDGETS GRID */
-        .widgets {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;
-        }
+        .widgets { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .widget {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 15px; border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.85rem;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px; border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-size: 0.8rem;
         }
 
-        /* THEME SELECTOR BUTTONS */
-        .theme-selector { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .theme-btn {
-            padding: 8px 20px; border-radius: 50px; border: 1px solid white;
-            background: transparent; color: white; cursor: pointer; transition: 0.3s;
+        .theme-selector { margin: 20px 0; display: flex; justify-content: center; gap: 10px; }
+        .btn {
+            padding: 10px 20px; border-radius: 50px; border: 1px solid currentColor;
+            background: transparent; color: inherit; cursor: pointer; font-weight: 600;
         }
-        .theme-btn:hover { background: white; color: black; }
+        .btn:hover { background: rgba(255,255,255,0.2); }
 
         input {
-            width: 100%; padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.3);
-            background: rgba(255, 255, 255, 0.1); color: white; outline: none; margin-bottom: 10px;
+            width: 100%; padding: 15px; border-radius: 15px; border: 1px solid rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.2); color: inherit; outline: none; margin-bottom: 20px;
         }
 
-        .premium-btn {
-            background: #fff; color: #000; padding: 12px 40px;
-            border-radius: 50px; border: none; font-weight: 600; cursor: pointer;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        /* NOTES AREA */
-        textarea {
-            width: 100%; height: 80px; background: rgba(0,0,0,0.2); 
-            border: none; border-radius: 15px; padding: 10px; color: white;
-            margin-top: 10px; resize: none; font-family: inherit;
-        }
-
-        #music-container { margin-top: 20px; border-radius: 20px; overflow: hidden; }
+        iframe { border-radius: 20px; margin-top: 15px; width: 100%; height: 80px; }
     </style>
 </head>
-<body id="mainBg">
+<body id="mainBody">
 
     <div class="glass-card">
         <div class="widgets">
             <div class="widget">🕒 <span id="time">00:00:00</span></div>
+            <div class="widget">🌡️ Delhi: 28°C</div>
             <div class="widget">🌍 London: <span id="london">00:00</span></div>
-            <div class="widget">🌡️ Delhi: 28°C | Sunny</div>
             <div class="widget">📅 March 26, 2026</div>
         </div>
 
-        <h2>How was your day?</h2>
+        <h1>How was your day?</h1>
+        
         <div class="theme-selector">
-            <button class="theme-btn" onclick="setTheme('cute')">Cute</button>
-            <button class="theme-btn" onclick="setTheme('classy')">Classy</button>
-            <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+            <button class="btn" onclick="setTheme('cute')">Cute</button>
+            <button class="btn" onclick="setTheme('classy')">Classy</button>
+            <button class="btn" onclick="setTheme('dark')">Dark</button>
         </div>
 
-        <input type="text" id="userInput" placeholder="Tell me your mood...">
-        <button class="premium-btn" onclick="handleMood()">Check Vibe</button>
+        <input type="text" id="userInput" placeholder="Tell me your vibe...">
+        <button class="btn" style="background: currentColor; color: #fff; border: none;" onclick="handleMood()">Update Vibe</button>
 
-        <div id="music-container"></div>
-
-        <div class="widget" style="margin-top: 20px; text-align: left;">
-            <strong>📝 Quick Notes:</strong>
-            <textarea placeholder="Write your goals here..."></textarea>
-        </div>
+        <div id="musicBox"></div>
     </div>
 
     <script>
-        // LIVE CLOCKS
+        // CLOCK
         setInterval(() => {
-            const now = new Date();
-            document.getElementById('time').innerText = now.toLocaleTimeString();
+            document.getElementById('time').innerText = new Date().toLocaleTimeString();
             document.getElementById('london').innerText = new Date().toLocaleTimeString('en-GB', {timeZone: 'Europe/London', hour: '2-digit', minute:'2-digit'});
         }, 1000);
 
-        // THEME SWITCHER
+        // THEME LOGIC
         function setTheme(type) {
-            const bg = document.getElementById('mainBg');
+            const body = document.getElementById('mainBody');
             if(type === 'cute') {
-                bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1635326444812-7067d51240a2?q=80&w=2574&auto=format&fit=crop')";
+                body.classList.remove('dark-mode');
+                body.style.backgroundImage = "url('https://images.unsplash.com/photo-1635326444812-7067d51240a2?q=80&w=2574&auto=format&fit=crop')"; // 3D Bubbles
             } else if(type === 'classy') {
-                bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2670&auto=format&fit=crop')"; // Premium Rich Interior
+                body.classList.remove('dark-mode');
+                body.style.backgroundImage = "url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2670&auto=format&fit=crop')"; // Premium Interior
             } else if(type === 'dark') {
-                bg.style.backgroundImage = "url('https://images.unsplash.com/photo-1506318137071-a8e063b4bc09?q=80&w=2670&auto=format&fit=crop')"; // 3D Night Space
+                body.classList.add('dark-mode');
+                body.style.backgroundImage = "url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop')"; // High-end 3D Dark Geometry
             }
         }
 
-        // MOOD & MUSIC LOGIC
+        // MOOD LOGIC
         function handleMood() {
-            const input = document.getElementById('userInput').value.toLowerCase();
-            const music = document.getElementById('music-container');
-            
-            if(input.includes("happy") || input.includes("cute")) {
+            const val = document.getElementById('userInput').value.toLowerCase();
+            const music = document.getElementById('musicBox');
+            if(val.includes("happy") || val.includes("cute")) {
                 setTheme('cute');
-                music.innerHTML = `<iframe src="https://open.spotify.com/embed/track/1BxfuRmsmsOeoFLvC7L61S" width="100%" height="80" frameBorder="0" allow="encrypted-media"></iframe>`;
-            } else if(input.includes("classy") || input.includes("rich")) {
+                music.innerHTML = `<iframe src="http://googleusercontent.com/spotify.com/7" frameBorder="0"></iframe>`;
+            } else if(val.includes("classy")) {
                 setTheme('classy');
-                music.innerHTML = `<iframe src="https://open.spotify.com/embed/track/0tgVpS3mghpBozvYvRPS6u" width="100%" height="80" frameBorder="0" allow="encrypted-media"></iframe>`;
-            } else if(input.includes("sad") || input.includes("dark")) {
+                music.innerHTML = `<iframe src="http://googleusercontent.com/spotify.com/8" frameBorder="0"></iframe>`;
+            } else if(val.includes("dark") || val.includes("sad")) {
                 setTheme('dark');
-                music.innerHTML = `<iframe src="https://open.spotify.com/embed/track/5z9S9u0VvVfB4Wd9tPto2n" width="100%" height="80" frameBorder="0" allow="encrypted-media"></iframe>`;
+                music.innerHTML = `<iframe src="http://googleusercontent.com/spotify.com/9" frameBorder="0"></iframe>`;
             }
         }
     </script>
