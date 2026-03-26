@@ -2,77 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title> Premium Hub</title>
+    <title>Adwitiya's Premium Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            background-size: cover; 
-            background-position: center; 
-            background-attachment: fixed; 
-            transition: 0.8s; 
-            padding: 20px; 
-        }
+        body { font-family: 'Poppins', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; background-attachment: fixed; transition: 0.8s; padding: 20px; }
         
-        /* THEMES - SAVED AS YOU REQUESTED */
+        /* THEMES - KEPT EXACTLY AS YOU LOVE THEM */
         body.cute-mode { background-image: url('https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=2574&auto=format&fit=crop'); color: #ff69b4; }
         body.classy-mode { background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2670&auto=format&fit=crop'); color: #d4af37; }
         body.dark-mode { background-image: url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop'); color: #ffffff; }
 
-        .glass-card { 
-            background: rgba(255, 255, 255, 0.1); 
-            backdrop-filter: blur(30px); 
-            border-radius: 40px; 
-            border: 1px solid rgba(255, 255, 255, 0.3); 
-            padding: 30px; 
-            width: 100%; 
-            max-width: 850px; 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 20px; 
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5); 
-        }
-        
-        .widget-box { 
-            background: rgba(255, 255, 255, 0.15); 
-            padding: 15px; 
-            border-radius: 20px; 
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-            margin-bottom: 10px; 
-        }
-        
-        input, textarea, input[type="number"] { 
-            width: 100%; 
-            background: rgba(255,255,255,0.1); 
-            border: 1px solid rgba(255,255,255,0.2); 
-            border-radius: 12px; 
-            padding: 10px; 
-            color: inherit; 
-            font-family: inherit; 
-            outline: none; 
-            margin-bottom: 5px; 
-        }
-        
-        .btn { 
-            padding: 10px; 
-            border-radius: 50px; 
-            border: 1px solid currentColor; 
-            background: transparent; 
-            color: inherit; 
-            cursor: pointer; 
-            font-weight: 600; 
-            width: 100%; 
-            transition: 0.3s; 
-            margin-top: 5px; 
-        }
-        
+        .glass-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(30px); border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.3); padding: 30px; width: 100%; max-width: 850px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); }
+        .widget-box { background: rgba(255, 255, 255, 0.15); padding: 15px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 10px; }
+        input, textarea, input[type="number"] { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 10px; color: inherit; font-family: inherit; outline: none; margin-bottom: 5px; }
+        .btn { padding: 10px; border-radius: 50px; border: 1px solid currentColor; background: transparent; color: inherit; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; margin-top: 5px; }
         .btn:hover { background: rgba(255,255,255,0.2); }
-        
         @media (max-width: 700px) { .glass-card { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -113,23 +58,27 @@
             <div class="widget-box">
                 <h2>🎵 Music System</h2>
                 <input type="text" id="moodInput" placeholder="Type cute, classy, or dark...">
-                <button class="btn" onclick="handleMood()">Set Mood & Play</button>
+                <div style="display:flex; gap:5px;">
+                    <button class="btn" onclick="handleMood()">Play</button>
+                    <button class="btn" style="border-color: #ff4d4d; color: #ff4d4d;" onclick="stopMusic()">Stop</button>
+                </div>
                 <p id="musicStatus" style="font-size: 0.7rem; margin-top: 5px; opacity: 0.8;"></p>
             </div>
             
             <div class="widget-box">
                 <h2>✅ My Goals</h2>
                 <div style="display:flex; gap:5px;">
-                    <input type="text" id="newGoal" placeholder="Add a goal...">
+                    <input type="text" id="newGoal" placeholder="Add goal...">
                     <button class="btn" style="width:40px; margin:0;" onclick="addGoal()">+</button>
                 </div>
-                <div id="goalList" style="margin-top: 10px; text-align: left;"></div>
+                <div id="goalList" style="margin-top: 10px; text-align: left; max-height: 80px; overflow-y: auto;"></div>
+                <button class="btn" style="font-size: 0.7rem; padding: 5px;" onclick="clearGoals()">Clear All</button>
             </div>
         </div>
     </div>
 
     <script>
-        // LIVE CLOCKS
+        // CLOCKS
         setInterval(() => {
             document.getElementById('time').innerText = new Date().toLocaleTimeString();
             document.getElementById('london').innerText = new Date().toLocaleTimeString('en-GB', {timeZone: 'Europe/London', hour: '2-digit', minute:'2-digit'});
@@ -137,16 +86,12 @@
 
         function setTheme(type) { document.getElementById('mainBody').className = type + '-mode'; }
 
-        // MUSIC ENGINE - USES YOUR UPLOADED FILES
+        // MUSIC LOGIC
         let audio;
         function handleMood() {
             const val = document.getElementById('moodInput').value.toLowerCase();
             const status = document.getElementById('musicStatus');
-            
-            if(audio) { 
-                audio.pause(); 
-                audio.currentTime = 0; 
-            }
+            if(audio) { audio.pause(); audio.currentTime = 0; }
 
             let file = "";
             if(val.includes("cute")) { file = "cute.mp3"; setTheme('cute'); }
@@ -155,12 +100,20 @@
 
             if(file) {
                 audio = new Audio(file);
-                audio.play().catch(() => { status.innerText = "⚠️ Tap the screen once, then try again!"; });
+                audio.play().catch(() => { status.innerText = "⚠️ Click screen first!"; });
                 status.innerText = "Playing: " + file;
             }
         }
 
-        // GOALS ENGINE
+        function stopMusic() {
+            if(audio) {
+                audio.pause();
+                audio.currentTime = 0;
+                document.getElementById('musicStatus').innerText = "Music Stopped";
+            }
+        }
+
+        // GOALS LOGIC
         function addGoal() {
             const g = document.getElementById('newGoal').value;
             if(!g) return;
@@ -170,37 +123,25 @@
             document.getElementById('goalList').appendChild(div);
             document.getElementById('newGoal').value = '';
         }
+        function clearGoals() { document.getElementById('goalList').innerHTML = ''; }
 
-        // DIARY ENGINE
-        function saveDiary() { 
-            localStorage.setItem('diary', document.getElementById('diary').value); 
-            alert("Entry Saved!"); 
-        }
-        
-        window.onload = () => { 
-            document.getElementById('diary').value = localStorage.getItem('diary') || ""; 
-        }
+        // DIARY LOGIC
+        function saveDiary() { localStorage.setItem('diary', document.getElementById('diary').value); alert("Entry Saved!"); }
+        window.onload = () => { document.getElementById('diary').value = localStorage.getItem('diary') || ""; }
 
-        // FOCUS TIMER ENGINE
+        // TIMER LOGIC
         let countdown;
         function toggleTimer() {
             let s = document.getElementById('focusTime').value * 60;
             const btn = document.getElementById('timerBtn');
             const display = document.getElementById('timerDisplay');
-            
             if(btn.innerText === "Start Focus") {
                 clearInterval(countdown);
                 btn.innerText = "Stop";
                 countdown = setInterval(() => {
                     s--;
-                    let mins = Math.floor(s/60);
-                    let secs = s%60;
-                    display.innerText = mins + ":" + (secs < 10 ? '0' : '') + secs;
-                    if(s <= 0) { 
-                        clearInterval(countdown); 
-                        alert("Focus time finished!"); 
-                        btn.innerText = "Start Focus"; 
-                    }
+                    display.innerText = Math.floor(s/60) + ":" + (s%60 < 10 ? '0' : '') + (s%60);
+                    if(s <= 0) { clearInterval(countdown); alert("Done!"); btn.innerText = "Start Focus"; }
                 }, 1000);
             } else {
                 clearInterval(countdown);
