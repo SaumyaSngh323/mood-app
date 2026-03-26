@@ -1,0 +1,14 @@
+<h1>Weather Widget</h1>
+<select id="country-select">
+  <option value="India">India</option>
+  <option value="USA">USA</option>
+</select>
+<div id="weather-info">Select a country to view weather</div>
+
+<script>
+document.getElementById('country-select').addEventListener('change', e => {
+  const country = e.target.value;
+  // Dummy example (replace with API for real data)
+  document.getElementById('weather-info').innerText = `Weather in ${country}: Sunny 25°C`;
+});
+</script>
