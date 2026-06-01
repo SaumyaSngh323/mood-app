@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Diary – My Hub</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    /* MOOD PICKER */
+    .mood-picker {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .mood-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      cursor: pointer;
+      transition: 0.25s;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .mood-option span {
+      font-size: 0.65rem;
+      opacity: 0.65;
+      font-weight: 600;
+    }
+
+    .mood-option:hover { background: rgba(255,255,255,0.14); }
+    .mood-option.selected { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.22); }
+
+    /* DIARY ENTRIES */
+    .diary-entry {
+      background: rgba(255,255,255,0.06);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 13px 16px;
+      margin-bottom: 9px;
+    }
+
+    .entry-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .entry-mood-icon { font-size: 1.2rem; line-height: 1; }
+    .entry-time { font-size: 0.7rem; opacity: 0.5; }
+    .entry-text { font-size: 0.88rem; line-height: 1.55; }
+
+    .entries-container { max-height: 280px; overflow-y: auto; scrollbar-width: thin; }
+    .entry-count { font-size: 0.75rem; opacity: 0.55; margin-bottom: 12px; }
+
+    .empty-state { text-align: center; opacity: 0.45; padding: 28px 0; font-size: 0.88rem; }
+
+    /* MOOD CHART */
+    .mood-chart-title {
+      font-size: 0.76rem;
+      font-weight: 600;
+      opacity: 0.55;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 90px;
+      padding-bottom: 4px;
+    }
+
+    .chart-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .chart-bar {
+      width: 100%;
+      border-radius: 6px 6px 0 0;
+      background: rgba(255,255,255,0.18);
+      transition: height 0.5s cubic-bezier(.22,.68,0,1.2);
+      min-height: 4px;
+    }
+
+    .chart-emoji { font-size: 1rem; line-height: 1; }
+    .chart-day   { font-size: 0.62rem; opacity: 0.5; }
+
+    .mood-summary {
+      margin-top: 14px;
+      font-size: 0.82rem;
+      opacity: 0.7;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="cute-mode">
+  <canvas id="bgCanvas"></canvas>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-logo">✨ My Hub</a>
+    <ul class="nav-links">
+      <li><a href="diary.html" class="active">Diary</a></li>
+      <li><a href="timer.html">Timer</a></li>
+      <li><a href="music.html">Music</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="wellness.html">Wellness</a></li>
+      <li><a href="game.html">Game</a></li>
+    </ul>
+    <div class="theme-btns">
+      <button class="theme-btn" onclick="setTheme('cute')">Cute</button>
+      <button class="theme-btn" onclick="setTheme('classy')">Classy</button>
+      <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="glass-card">
+      <h1>📔 Digital Diary</h1>
+      <p class="subtitle">Capture your thoughts, feelings, and memories.</p>
+
+      <!-- WRITE ENTRY -->
+      <div class="widget-box">
+        <div class="mood-chart-title" style="margin-bottom:10px;">How are you feeling?</div>
+        <div class="mood-picker" id="moodPicker">
+          <div class="mood-option" data-mood="5" data-label="Amazing" onclick="selectMood(this)">😄<span>Amazing</span></div>
+          <div class="mood-option" data-mood="4" data-label="Good"    onclick="selectMood(this)">🙂<span>Good</span></div>
+          <div class="mood-option" data-mood="3" data-label="Neutral" onclick="selectMood(this)">😐<span>Neutral</span></div>
+          <div class="mood-option" data-mood="2" data-label="Low"     onclick="selectMood(this)">😔<span>Low</span></div>
+          <div class="mood-option" data-mood="1" data-label="Rough"   onclick="selectMood(this)">😢<span>Rough</span></div>
+        </div>
+        <textarea id="diaryInput" placeholder="What's on your mind today?"></textarea>
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn" onclick="saveEntry()">Save Entry</button>
+          <button class="btn btn-danger" onclick="clearAll()">Clear All</button>
+        </div>
+      </div>
+
+      <!-- MOOD CHART -->
+      <div class="widget-box">
+        <div class="mood-chart-title">📊 7-Day Mood Chart</div>
+        <div class="chart-bars" id="moodChart"></div>
+        <div class="mood-summary" id="moodSummary"></div>
+      </div>
+
+      <!-- ENTRIES -->
+      <div class="widget-box">
+        <div class="entry-count" id="entryCount"></div>
+        <div class="entries-container" id="entriesList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="bg.js"></script>
+  <script>
+    const MOODS = {
+      5: { emoji: '😄', label: 'Amazing', color: 'rgba(100,220,130,0.55)' },
+      4: { emoji: '🙂', label: 'Good',    color: 'rgba(120,200,255,0.55)' },
+      3: { emoji: '😐', label: 'Neutral', color: 'rgba(200,200,100,0.45)' },
+      2: { emoji: '😔', label: 'Low',     color: 'rgba(200,140,80,0.5)'   },
+      1: { emoji: '😢', label: 'Rough',   color: 'rgba(200,80,100,0.5)'   },
+    };
+
+    let selectedMood = null;
+
+    function selectMood(el) {
+      document.querySelectorAll('.mood-option').forEach(m => m.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedMood = parseInt(el.dataset.mood);
+    }
+
+    function saveEntry() {
+      const text = document.getElementById('diaryInput').value.trim();
+      if (!text) return;
+      let history = JSON.parse(localStorage.getItem('diaryHistory')) || [];
+      const now = new Date();
+      const timestamp = now.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+        + ' · ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      history.unshift({
+        time: timestamp,
+        text,
+        mood: selectedMood || 3,
+        dateKey: now.toISOString().slice(0, 10)
+      });
+      localStorage.setItem('diaryHistory', JSON.stringify(history));
+      document.getElementById('diaryInput').value = '';
+      document.querySelectorAll('.mood-option').forEach(m => m.classList.remove('selected'));
+      selectedMood = null;
+      renderEntries();
+      renderChart();
+    }
+
+    function clearAll() {
+      if (!confirm('Delete all diary entries?')) return;
+      localStorage.removeItem('diaryHistory');
+      renderEntries();
+      renderChart();
+    }
+
+    function renderEntries() {
+      const history = JSON.parse(localStorage.getItem('diaryHistory')) || [];
+      const container = document.getElementById('entriesList');
+      const count = document.getElementById('entryCount');
+      count.innerText = history.length === 0 ? '' : `${history.length} entr${history.length === 1 ? 'y' : 'ies'}`;
+      if (!history.length) {
+        container.innerHTML = '<div class="empty-state">✏️ No entries yet.<br>Write your first memory above!</div>';
+        return;
+      }
+      container.innerHTML = history.map(e => {
+        const m = MOODS[e.mood] || MOODS[3];
+        const text = typeof e === 'string' ? e : e.text;
+        const time = typeof e === 'string' ? '' : e.time;
+        return `<div class="diary-entry">
+          <div class="entry-header">
+            <div class="entry-mood-icon">${m.emoji}</div>
+            <div class="entry-time">${time} · ${m.label}</div>
+          </div>
+          <div class="entry-text">${text}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderChart() {
+      const history = JSON.parse(localStorage.getItem('diaryHistory')) || [];
+      const chart = document.getElementById('moodChart');
+      const summary = document.getElementById('moodSummary');
+
+      const days = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        days.push({
+          key: d.toISOString().slice(0, 10),
+          label: d.toLocaleDateString('en-GB', { weekday: 'short' }),
+        });
+      }
+
+      const dayMoods = {};
+      history.forEach(e => {
+        if (e.dateKey && e.mood && !dayMoods[e.dateKey]) {
+          dayMoods[e.dateKey] = e.mood;
+        }
+      });
+
+      const vals = days.map(d => dayMoods[d.key] || 0);
+      const maxVal = 5;
+
+      chart.innerHTML = days.map((d, i) => {
+        const val = vals[i];
+        const m = val ? MOODS[val] : null;
+        const heightPct = val ? Math.round((val / maxVal) * 80) : 6;
+        const color = m ? m.color : 'rgba(255,255,255,0.08)';
+        return `<div class="chart-col">
+          <div class="chart-bar" style="height:${heightPct}px; background:${color};"></div>
+          <div class="chart-emoji">${m ? m.emoji : '·'}</div>
+          <div class="chart-day">${d.label}</div>
+        </div>`;
+      }).join('');
+
+      const logged = vals.filter(v => v > 0);
+      if (!logged.length) {
+        summary.innerText = 'No mood entries yet — start journaling!';
+      } else {
+        const avg = logged.reduce((a, b) => a + b, 0) / logged.length;
+        const best = MOODS[Math.max(...logged)];
+        summary.innerText = `${logged.length} day${logged.length > 1 ? 's' : ''} logged this week · avg mood ${avg.toFixed(1)}/5 · best day was ${best.emoji} ${best.label}`;
+      }
+    }
+
+    window.onload = () => { renderEntries(); renderChart(); };
+  </script>
+</body>
+</html>

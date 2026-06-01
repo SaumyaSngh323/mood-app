@@ -1,175 +1,764 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>MY Premium Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Poppins', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; background-attachment: fixed; transition: 0.8s; padding: 20px; }
-        
-        /* THEMES - SAVED AS YOU REQUESTED */
-        body.cute-mode { background-image: url('https://images.unsplash.com/photo-1592194996308-7b43878e84a6?q=80&w=2574&auto=format&fit=crop'); color: #ff69b4; }
-        body.classy-mode { background-image: url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2670&auto=format&fit=crop'); color: #d4af37; }
-        body.dark-mode { background-image: url('https://images.unsplash.com/photo-1550684376-efcbd6e3f031?q=80&w=2670&auto=format&fit=crop'); color: #ffffff; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Premium Hub ✨</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    /* ─── SPLASH ─────────────────────────────────────── */
+    #splash {
+      position: fixed; inset: 0; z-index: 999;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 30px;
+      background: #000;
+      transition: opacity 0.85s ease;
+    }
+    #splash.gone { opacity: 0; pointer-events: none; }
 
-        .glass-card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(30px); border-radius: 40px; border: 1px solid rgba(255, 255, 255, 0.3); padding: 30px; width: 100%; max-width: 850px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); }
-        .widget-box { background: rgba(255, 255, 255, 0.15); padding: 15px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.2); margin-bottom: 10px; }
-        input, textarea, input[type="number"] { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 10px; color: inherit; font-family: inherit; outline: none; margin-bottom: 5px; }
-        .btn { padding: 10px; border-radius: 50px; border: 1px solid currentColor; background: transparent; color: inherit; cursor: pointer; font-weight: 600; width: 100%; transition: 0.3s; margin-top: 5px; }
-        .btn:hover { background: rgba(255,255,255,0.2); }
-        
-        #diaryList, #goalList { max-height: 100px; overflow-y: auto; margin-top: 10px; text-align: left; scrollbar-width: thin; }
-        .diary-entry { font-size: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 5px 0; }
-        
-        @media (max-width: 700px) { .glass-card { grid-template-columns: 1fr; } }
-    </style>
+    .sp-tag {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; padding: 4px 14px; border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.07);
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 18px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .sp-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.4rem, 7vw, 4.5rem);
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      animation: fadeUp 0.7s 0.25s ease both;
+      background: linear-gradient(130deg, #ff2d78 0%, #b347ff 40%, #38beff 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .sp-quote {
+      max-width: 480px; font-size: 0.9rem; line-height: 1.7;
+      color: rgba(255,255,255,0.45); font-style: italic;
+      margin-top: 24px;
+      animation: fadeUp 0.8s 0.45s ease both;
+    }
+
+    .sp-dots {
+      display: flex; gap: 7px; margin-top: 36px;
+      animation: fadeUp 0.8s 0.65s ease both;
+    }
+    .sp-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      animation: dotP 1.3s infinite ease-in-out;
+    }
+    .sp-dot:nth-child(2) { animation-delay: 0.18s; }
+    .sp-dot:nth-child(3) { animation-delay: 0.36s; }
+
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    @keyframes dotP {
+      0%,80%,100% { opacity:.25; transform:scale(1); }
+      40%          { opacity:1;   transform:scale(1.5); }
+    }
+
+    /* ─── MAIN ───────────────────────────────────────── */
+    #main { display: none; }
+
+    .page-wrapper {
+      padding: 74px 16px 32px;
+      align-items: stretch;
+    }
+
+    /* ─── STATUS BAR ─────────────────────────────────── */
+    .status-bar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+    }
+
+    .status-left { display: flex; align-items: center; gap: 10px; }
+
+    .live-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #baff39;
+      box-shadow: 0 0 10px #baff39;
+      animation: livePulse 2s ease infinite;
+    }
+    @keyframes livePulse {
+      0%,100% { box-shadow: 0 0 6px #baff39, 0 0 14px #baff3960; }
+      50%      { box-shadow: 0 0 12px #baff39, 0 0 28px #baff3999; }
+    }
+
+    .live-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; opacity: 0.55;
+    }
+
+    .status-date {
+      font-size: 0.72rem; opacity: 0.4; font-weight: 500;
+    }
+
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 5.5vw, 3.5rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1px;
+      background: linear-gradient(130deg, #ff2d78 0%, #b347ff 50%, #38beff 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradShift 5s ease infinite;
+      margin-bottom: 4px;
+    }
+    @keyframes gradShift {
+      0%   { background-position: 0% center; }
+      50%  { background-position: 100% center; }
+      100% { background-position: 0% center; }
+    }
+
+    /* ─── MARQUEE ────────────────────────────────────── */
+    .marquee-wrap {
+      overflow: hidden;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 10px 0;
+      margin-bottom: 14px;
+      position: relative;
+    }
+    .marquee-wrap::before, .marquee-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 60px;
+      z-index: 2;
+    }
+    .marquee-wrap::before { left: 0;  background: linear-gradient(to right,  rgba(22,4,30,0.95), transparent); }
+    .marquee-wrap::after  { right: 0; background: linear-gradient(to left, rgba(22,4,30,0.95), transparent); }
+
+    .marquee-track {
+      display: flex; gap: 0;
+      animation: marqueeScroll 28s linear infinite;
+      width: max-content;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+
+    @keyframes marqueeScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    .marquee-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 0 28px;
+      font-size: 0.78rem; font-weight: 600;
+      white-space: nowrap; opacity: 0.72;
+    }
+    .marquee-sep { opacity: 0.25; font-size: 0.6rem; }
+
+    /* ─── BENTO GRID ─────────────────────────────────── */
+    .bento {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      gap: 12px;
+    }
+
+    .bento-card {
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(30px) saturate(180%);
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 22px;
+      transition: transform 0.35s cubic-bezier(.22,.68,0,1.2),
+                  border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .bento-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity 0.3s;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.07), transparent 60%);
+    }
+    .bento-card:hover { transform: translateY(-5px) scale(1.015); }
+    .bento-card:hover::before { opacity: 1; }
+
+    /* glow variants */
+    .glow-pink:hover   { border-color: rgba(255,45,120,0.5); box-shadow: 0 12px 40px rgba(255,45,120,0.22), inset 0 0 30px rgba(255,45,120,0.06); }
+    .glow-purple:hover { border-color: rgba(179,71,255,0.5); box-shadow: 0 12px 40px rgba(179,71,255,0.22), inset 0 0 30px rgba(179,71,255,0.06); }
+    .glow-blue:hover   { border-color: rgba(56,190,255,0.5); box-shadow: 0 12px 40px rgba(56,190,255,0.22), inset 0 0 30px rgba(56,190,255,0.06); }
+    .glow-lime:hover   { border-color: rgba(186,255,57,0.5); box-shadow: 0 12px 40px rgba(186,255,57,0.22), inset 0 0 30px rgba(186,255,57,0.06); }
+    .glow-yellow:hover { border-color: rgba(255,233,60,0.5); box-shadow: 0 12px 40px rgba(255,233,60,0.22), inset 0 0 30px rgba(255,233,60,0.06); }
+
+    /* ─── CLOCK CARD ─────────────────────────────────── */
+    .b-clock { grid-column: 1 / 3; }
+
+    .clock-time {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1;
+      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.6) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .clock-sub { font-size: 0.72rem; opacity: 0.4; margin-top: 5px; font-weight: 500; }
+    .clock-row { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+    .clock-london {
+      font-size: 0.8rem; font-weight: 600;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 4px 10px;
+      opacity: 0.7;
+    }
+
+    /* ─── VIBE CARD ──────────────────────────────────── */
+    .b-vibe { grid-column: 3; }
+
+    .vibe-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 2px; opacity: 0.4; text-transform: uppercase; margin-bottom: 10px; }
+    .vibe-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .vibe-btn {
+      aspect-ratio: 1;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 3px;
+      transition: all 0.25s;
+    }
+    .vibe-btn span { font-size: 0.55rem; opacity: 0.55; font-weight: 600; font-family: 'Space Grotesk',sans-serif; }
+    .vibe-btn:hover, .vibe-btn.active { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.35); transform: scale(1.06); }
+    .vibe-result { margin-top: 10px; font-size: 0.75rem; opacity: 0.6; text-align: center; min-height: 20px; }
+
+    /* ─── WEATHER CARD ───────────────────────────────── */
+    .b-weather { grid-column: 1; }
+
+    .weather-search-row { display: flex; gap: 7px; margin-bottom: 10px; }
+    .weather-search-row input { font-size: 0.8rem; }
+    .weather-search-row button {
+      padding: 8px 13px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.08);
+      color: inherit; font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem; font-weight: 700; cursor: pointer;
+      transition: 0.25s; white-space: nowrap;
+    }
+    .weather-search-row button:hover { background: rgba(255,255,255,0.2); }
+    .weather-result { display: none; margin-top: 8px; }
+    .weather-main { display: flex; align-items: center; gap: 10px; }
+    .weather-emoji { font-size: 2.6rem; line-height: 1; }
+    .weather-temp { font-family: 'Space Grotesk',sans-serif; font-size: 2.4rem; font-weight: 900; line-height: 1; }
+    .weather-unit { font-size: 0.8rem; opacity: 0.4; align-self: flex-start; margin-top: 6px; }
+    .weather-meta { margin-top: 4px; }
+    .weather-city { font-size: 0.78rem; font-weight: 600; opacity: 0.7; }
+    .weather-desc { font-size: 0.68rem; opacity: 0.45; }
+    .weather-wind { font-size: 0.65rem; opacity: 0.35; margin-top: 6px; }
+    .weather-status { font-size: 0.7rem; opacity: 0.35; margin-top: 6px; }
+
+    /* ─── QUOTE CARD ─────────────────────────────────── */
+    .b-quote { grid-column: 2 / 4; }
+
+    .quote-big {
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      font-style: italic;
+      line-height: 1.7;
+      opacity: 0.75;
+    }
+    .quote-author-line {
+      margin-top: 10px;
+      font-size: 0.72rem;
+      opacity: 0.38;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .quote-refresh {
+      margin-top: 12px;
+      padding: 5px 14px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05);
+      color: inherit;
+      font-family: 'Space Grotesk',sans-serif;
+      font-size: 0.68rem; font-weight: 700;
+      cursor: pointer; transition: 0.25s; width: auto;
+    }
+    .quote-refresh:hover { background: rgba(255,255,255,0.14); }
+
+    /* ─── HUB NAV CARDS ──────────────────────────────── */
+    .b-nav { grid-column: 1 / 4; }
+
+    .nav-cards {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .nav-card {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; text-decoration: none; color: inherit;
+      background: rgba(255,255,255,0.06);
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 20px 8px;
+      gap: 8px;
+      transition: all 0.35s cubic-bezier(.22,.68,0,1.2);
+      position: relative; overflow: hidden;
+    }
+    .nav-card::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      transform: scaleX(0);
+      transition: transform 0.3s;
+      border-radius: 0 0 20px 20px;
+    }
+    .nav-card:hover { transform: translateY(-6px); background: rgba(255,255,255,0.12); }
+    .nav-card:hover::after { transform: scaleX(1); }
+
+    .nc-diary::after   { background: var(--neon-pink); }
+    .nc-timer::after   { background: var(--neon-purple); }
+    .nc-music::after   { background: var(--neon-blue); }
+    .nc-goals::after   { background: var(--neon-lime); }
+    .nc-wellness::after{ background: var(--neon-yellow); }
+    .nc-game::after    { background: #ff7c4c; }
+
+    .nc-diary:hover   { box-shadow: 0 10px 30px rgba(255,45,120,0.2); border-color: rgba(255,45,120,0.35); }
+    .nc-timer:hover   { box-shadow: 0 10px 30px rgba(179,71,255,0.2); border-color: rgba(179,71,255,0.35); }
+    .nc-music:hover   { box-shadow: 0 10px 30px rgba(56,190,255,0.2); border-color: rgba(56,190,255,0.35); }
+    .nc-goals:hover   { box-shadow: 0 10px 30px rgba(186,255,57,0.2); border-color: rgba(186,255,57,0.35); }
+    .nc-wellness:hover{ box-shadow: 0 10px 30px rgba(255,233,60,0.2); border-color: rgba(255,233,60,0.35); }
+    .nc-game:hover    { box-shadow: 0 10px 30px rgba(255,124,76,0.2); border-color: rgba(255,124,76,0.35); }
+
+    .nav-icon { font-size: 2rem; line-height: 1; }
+    .nav-name { font-size: 0.78rem; font-weight: 700; }
+    .nav-desc { font-size: 0.62rem; opacity: 0.4; }
+
+    /* ─── WALLPAPER CUSTOMIZER ───────────────────────── */
+    .fab {
+      position: fixed; bottom: 22px; right: 22px;
+      z-index: 200;
+      width: 48px; height: 48px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(16px);
+      color: inherit; font-size: 1.3rem;
+      cursor: pointer; transition: all 0.3s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .fab:hover { background: rgba(255,255,255,0.15); transform: scale(1.12) rotate(15deg); }
+
+    .cust-panel {
+      position: fixed; bottom: 82px; right: 22px;
+      z-index: 200; width: 272px;
+      background: rgba(10,4,20,0.75);
+      backdrop-filter: blur(36px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px; padding: 20px;
+      transform: translateY(16px) scale(0.95);
+      opacity: 0; pointer-events: none;
+      transition: all 0.32s cubic-bezier(.22,.68,0,1.2);
+    }
+    .cust-panel.open { transform: none; opacity: 1; pointer-events: all; }
+
+    .cust-head { font-size: 0.78rem; font-weight: 700; opacity: 0.7; margin-bottom: 16px; letter-spacing: 0.5px; }
+    .cust-row  { margin-bottom: 14px; }
+    .cust-lbl  { font-size: 0.68rem; opacity: 0.45; margin-bottom: 7px; display:flex; justify-content:space-between; }
+
+    .pal-row { display:flex; gap:8px; flex-wrap:wrap; }
+    .pal-swatch {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.15); cursor: pointer;
+      transition: all 0.25s;
+    }
+    .pal-swatch:hover, .pal-swatch.on { border-color: rgba(255,255,255,0.9); transform: scale(1.18); }
+    .pal-swatch.ps-theme  { background: conic-gradient(#ff69b4, #da70d6, #ffb6c1, #c084fc); }
+    .pal-swatch.ps-sunset { background: conic-gradient(#ff6446, #ffaa3c, #dc5096); }
+    .pal-swatch.ps-ocean  { background: conic-gradient(#00aaf0, #00dcc8, #3c78ff); }
+    .pal-swatch.ps-forest { background: conic-gradient(#3cc85a, #78f082, #c8f03c); }
+    .pal-swatch.ps-galaxy { background: conic-gradient(#c83cff, #3c78ff, #ff3cc8); }
+    .pal-swatch.ps-rose   { background: conic-gradient(#ff6e82, #ffa0be, #dc5070); }
+    .pal-swatch.ps-sunrise{ background: conic-gradient(#ffb43c, #ff7850, #ffe064); }
+
+    .cust-slider {
+      -webkit-appearance: none;
+      width: 100%; height: 5px; border-radius: 4px;
+      background: rgba(255,255,255,0.12);
+      outline: none; border: none; padding: 0; cursor: pointer;
+    }
+    .cust-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: currentColor; cursor: pointer;
+      border: 2px solid rgba(255,255,255,0.35);
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 700px) {
+      .bento { grid-template-columns: 1fr 1fr; }
+      .b-clock   { grid-column: 1 / 3; }
+      .b-vibe    { grid-column: 1 / 3; }
+      .b-weather { grid-column: 1 / 3; }
+      .b-quote   { grid-column: 1 / 3; }
+      .b-nav     { grid-column: 1 / 3; }
+      .nav-cards { grid-template-columns: repeat(3, 1fr); }
+      .clock-time { font-size: 2.4rem; }
+    }
+    @media (max-width: 420px) {
+      .nav-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
-<body id="mainBody" class="cute-mode">
+<body class="cute-mode">
+  <canvas id="bgCanvas"></canvas>
 
-    <div class="glass-card">
-        <div class="left-panel">
-            <div class="widget-box">
-                <h2 id="time">00:00:00</h2>
-                <p>London: <span id="london">00:00</span></p>
-                <p>March 26, 2026</p>
-            </div>
-            
-            <div class="widget-box">
-                <h2>📔 Digital Diary</h2>
-                <textarea id="diary" placeholder="Save a memory..."></textarea>
-                <button class="btn" onclick="saveDiary()">Save Entry</button>
-                <div id="diaryList"></div> </div>
-            
-            <div class="widget-box">
-                <h2>🎯 Focus Timer</h2>
-                <input type="number" id="focusTime" value="25" style="width: 70px;"> mins
-                <div id="timerDisplay" style="font-size: 1.5rem; font-weight: 600; margin-top: 5px;">25:00</div>
-                <button class="btn" id="timerBtn" onclick="toggleTimer()">Start Focus</button>
-            </div>
-        </div>
-
-        <div class="right-panel">
-            <div class="widget-box">
-                <h2>🌡️ Delhi: 28°C</h2>
-                <div style="display:flex; gap:5px;">
-                    <button class="btn" onclick="setTheme('cute')">Cute</button>
-                    <button class="btn" onclick="setTheme('classy')">Classy</button>
-                    <button class="btn" onclick="setTheme('dark')">Dark</button>
-                </div>
-            </div>
-            
-            <div class="widget-box">
-                <h2>🎵 Music System</h2>
-                <input type="text" id="moodInput" placeholder="Type cute, classy, or dark...">
-                <div style="display:flex; gap:5px;">
-                    <button class="btn" onclick="handleMood()">Play</button>
-                    <button class="btn" style="border-color: #ff4d4d; color: #ff4d4d;" onclick="stopMusic()">Stop</button>
-                </div>
-                <p id="musicStatus" style="font-size: 0.7rem; margin-top: 5px; opacity: 0.8;"></p>
-            </div>
-            
-            <div class="widget-box">
-                <h2>✅ My Goals</h2>
-                <div style="display:flex; gap:5px;">
-                    <input type="text" id="newGoal" placeholder="Add goal...">
-                    <button class="btn" style="width:40px; margin:0;" onclick="addGoal()">+</button>
-                </div>
-                <div id="goalList"></div>
-                <button class="btn" style="font-size: 0.7rem; padding: 5px;" onclick="clearGoals()">Clear All</button>
-            </div>
-        </div>
-        <div class="widget-box">
-    <h2>👟 Step Tracker</h2>
-    <p style="font-size:0.8rem; opacity:0.7; margin-bottom:8px;">Hit your daily goal</p>
-    <a href="steps.html" class="btn" style="display:block; text-align:center; text-decoration:none;">Open Step Tracker</a>
-</div>
+  <!-- ── SPLASH ─────────────────────────────────────────── -->
+  <div id="splash">
+    <div class="sp-tag">✦ welcome back</div>
+    <div class="sp-title">My Premium Hub</div>
+    <div class="sp-quote" id="spQuote"></div>
+    <div class="sp-dots">
+      <div class="sp-dot"></div>
+      <div class="sp-dot"></div>
+      <div class="sp-dot"></div>
     </div>
+  </div>
 
-    <script>
-        // LIVE CLOCKS
-        setInterval(() => {
-            document.getElementById('time').innerText = new Date().toLocaleTimeString();
-            document.getElementById('london').innerText = new Date().toLocaleTimeString('en-GB', {timeZone: 'Europe/London', hour: '2-digit', minute:'2-digit'});
-        }, 1000);
+  <!-- ── MAIN ───────────────────────────────────────────── -->
+  <div id="main">
+    <nav class="top-nav">
+      <a href="index.html" class="nav-logo">✦ My Hub</a>
+      <ul class="nav-links">
+        <li><a href="diary.html">Diary</a></li>
+        <li><a href="timer.html">Timer</a></li>
+        <li><a href="music.html">Music</a></li>
+        <li><a href="goals.html">Goals</a></li>
+        <li><a href="wellness.html">Wellness</a></li>
+        <li><a href="game.html">Games</a></li>
+      </ul>
+      <div class="theme-btns">
+        <button class="theme-btn" onclick="setTheme('cute')">Cute</button>
+        <button class="theme-btn" onclick="setTheme('classy')">Classy</button>
+        <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+      </div>
+    </nav>
 
-        function setTheme(type) { document.getElementById('mainBody').className = type + '-mode'; }
+    <div class="page-wrapper">
 
-        // MUSIC LOGIC
-        let audio;
-        function handleMood() {
-            const val = document.getElementById('moodInput').value.toLowerCase();
-            const status = document.getElementById('musicStatus');
-            if(audio) { audio.pause(); audio.currentTime = 0; }
+      <!-- STATUS BAR -->
+      <div class="status-bar">
+        <div class="status-left">
+          <div class="live-dot"></div>
+          <div class="live-label">live</div>
+          <div style="font-size:0.7rem;opacity:0.28;">·</div>
+          <div class="hero-title">My Premium Hub</div>
+        </div>
+        <div class="status-date" id="statusDate"></div>
+      </div>
 
-            let file = "";
-            if(val.includes("cute")) { file = "cute.mp3"; setTheme('cute'); }
-            else if(val.includes("classy")) { file = "classy.mp3"; setTheme('classy'); }
-            else if(val.includes("dark")) { file = "dark.mp3"; setTheme('dark'); }
+      <!-- MARQUEE -->
+      <div class="marquee-wrap">
+        <div class="marquee-track" id="marqueeTrack"></div>
+      </div>
 
-            if(file) {
-                audio = new Audio(file);
-                audio.play().catch(() => { status.innerText = "⚠️ Tap screen first!"; });
-                status.innerText = "Playing: " + file;
-            }
+      <!-- BENTO GRID -->
+      <div class="bento" id="bento">
+
+        <!-- CLOCK -->
+        <div class="bento-card b-clock glow-blue">
+          <div class="clock-time" id="clockTime">00:00:00</div>
+          <div class="clock-sub" id="clockSub">loading…</div>
+          <div class="clock-row">
+            <div class="clock-london">🇬🇧 <span id="londonTime">--:--</span></div>
+            <div style="font-size:0.68rem;opacity:0.3;" id="clockDate"></div>
+          </div>
+        </div>
+
+        <!-- VIBE CHECK -->
+        <div class="bento-card b-vibe glow-pink">
+          <div class="vibe-label">vibe check ✦</div>
+          <div class="vibe-grid">
+            <button class="vibe-btn" data-vibe="thriving" onclick="setVibe(this,'thriving','✨ You're absolutely thriving!')">🌟<span>thriving</span></button>
+            <button class="vibe-btn" data-vibe="cozy"     onclick="setVibe(this,'cozy','🍵 Cozy mode activated.')">🍵<span>cozy</span></button>
+            <button class="vibe-btn" data-vibe="grinding" onclick="setVibe(this,'grinding','💪 Grind mode on.')">💪<span>grinding</span></button>
+            <button class="vibe-btn" data-vibe="meh"      onclick="setVibe(this,'meh','🌧️ That's okay too.')">🌧️<span>meh</span></button>
+          </div>
+          <div class="vibe-result" id="vibeResult"></div>
+        </div>
+
+        <!-- WEATHER -->
+        <div class="bento-card b-weather glow-yellow">
+          <div style="font-size:0.65rem;opacity:0.4;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">weather 🌤️</div>
+          <div class="weather-search-row">
+            <input type="text" id="cityInput" placeholder="City…" onkeydown="if(event.key==='Enter')fetchWeather()">
+            <button onclick="fetchWeather()">Go</button>
+          </div>
+          <div class="weather-result" id="wxResult">
+            <div class="weather-main">
+              <div class="weather-emoji" id="wxIcon">🌤️</div>
+              <div class="weather-temp" id="wxTemp">—</div>
+              <div class="weather-unit">°C</div>
+              <div class="weather-meta">
+                <div class="weather-city" id="wxCity">—</div>
+                <div class="weather-desc" id="wxDesc">—</div>
+              </div>
+            </div>
+            <div class="weather-wind" id="wxWind"></div>
+          </div>
+          <div class="weather-status" id="wxStatus">Type a city ↑</div>
+        </div>
+
+        <!-- QUOTE -->
+        <div class="bento-card b-quote glow-purple">
+          <div style="font-size:0.65rem;opacity:0.4;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">quote of the moment ✦</div>
+          <div class="quote-big" id="quoteBig"></div>
+          <div class="quote-author-line" id="quoteAuthorLine"></div>
+          <button class="quote-refresh btn" onclick="refreshQuote()">↻ new quote</button>
+        </div>
+
+        <!-- NAV CARDS -->
+        <div class="bento-card b-nav" style="padding:18px;">
+          <div style="font-size:0.65rem;opacity:0.4;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;">your space ✦</div>
+          <div class="nav-cards">
+            <a href="diary.html"    class="nav-card nc-diary">  <div class="nav-icon">📔</div><div class="nav-name">Diary</div>   <div class="nav-desc">memories</div></a>
+            <a href="timer.html"   class="nav-card nc-timer">  <div class="nav-icon">🎯</div><div class="nav-name">Timer</div>   <div class="nav-desc">focus</div></a>
+            <a href="music.html"   class="nav-card nc-music">  <div class="nav-icon">🎵</div><div class="nav-name">Music</div>   <div class="nav-desc">play anything</div></a>
+            <a href="goals.html"   class="nav-card nc-goals">  <div class="nav-icon">✅</div><div class="nav-name">Goals</div>   <div class="nav-desc">track it</div></a>
+            <a href="wellness.html"class="nav-card nc-wellness"><div class="nav-icon">💧</div><div class="nav-name">Wellness</div><div class="nav-desc">habits</div></a>
+            <a href="game.html"    class="nav-card nc-game">   <div class="nav-icon">🎮</div><div class="nav-name">Games</div>   <div class="nav-desc">take a break</div></a>
+          </div>
+        </div>
+
+      </div><!-- /bento -->
+    </div><!-- /page-wrapper -->
+
+    <!-- FAB -->
+    <button class="fab" onclick="toggleCust()" title="Customize">🎨</button>
+    <div class="cust-panel" id="custPanel">
+      <div class="cust-head">🎨 Customize Background</div>
+
+      <div class="cust-row">
+        <div class="cust-lbl">Palette</div>
+        <div class="pal-row">
+          <div class="pal-swatch ps-theme  on"  title="Theme"   onclick="setPal('theme',this)"></div>
+          <div class="pal-swatch ps-sunset"      title="Sunset"  onclick="setPal('sunset',this)"></div>
+          <div class="pal-swatch ps-ocean"        title="Ocean"   onclick="setPal('ocean',this)"></div>
+          <div class="pal-swatch ps-forest"       title="Forest"  onclick="setPal('forest',this)"></div>
+          <div class="pal-swatch ps-galaxy"       title="Galaxy"  onclick="setPal('galaxy',this)"></div>
+          <div class="pal-swatch ps-rose"         title="Rose"    onclick="setPal('rose',this)"></div>
+          <div class="pal-swatch ps-sunrise"      title="Sunrise" onclick="setPal('sunrise',this)"></div>
+        </div>
+      </div>
+
+      <div class="cust-row">
+        <div class="cust-lbl">Speed <span id="spdVal">1×</span></div>
+        <input type="range" class="cust-slider" min="0.2" max="4" step="0.1" value="1" oninput="setSpd(this.value)">
+      </div>
+
+      <div class="cust-row">
+        <div class="cust-lbl">Density <span id="orbVal">5</span></div>
+        <input type="range" class="cust-slider" min="2" max="10" step="1" value="5" oninput="setOrbs(this.value)">
+      </div>
+    </div>
+  </div><!-- /main -->
+
+  <script src="shared.js"></script>
+  <script src="bg.js"></script>
+  <script>
+    // ── QUOTES ──────────────────────────────────────────────────────────
+    const QUOTES = [
+      { q:"The only way to do great work is to love what you do.", a:"Steve Jobs" },
+      { q:"Believe you can and you're halfway there.", a:"Theodore Roosevelt" },
+      { q:"It does not matter how slowly you go as long as you do not stop.", a:"Confucius" },
+      { q:"You are never too old to set another goal or to dream a new dream.", a:"C.S. Lewis" },
+      { q:"The future belongs to those who believe in the beauty of their dreams.", a:"Eleanor Roosevelt" },
+      { q:"Start where you are. Use what you have. Do what you can.", a:"Arthur Ashe" },
+      { q:"Success is not final, failure is not fatal — it is the courage to continue that counts.", a:"Winston Churchill" },
+      { q:"In the middle of every difficulty lies opportunity.", a:"Albert Einstein" },
+      { q:"Don't watch the clock; do what it does. Keep going.", a:"Sam Levenson" },
+      { q:"Everything you've ever wanted is on the other side of fear.", a:"George Addair" },
+      { q:"The secret of getting ahead is getting started.", a:"Mark Twain" },
+      { q:"Dream big, work hard, stay humble.", a:"Unknown" },
+      { q:"Little by little, a little becomes a lot.", a:"Tanzanian Proverb" },
+      { q:"Be the change you wish to see in the world.", a:"Mahatma Gandhi" },
+      { q:"Life is either a daring adventure or nothing at all.", a:"Helen Keller" },
+      { q:"You miss 100% of the shots you don't take.", a:"Wayne Gretzky" },
+      { q:"Your only limit is your mind.", a:"Unknown" },
+      { q:"Hard work beats talent when talent doesn't work hard.", a:"Tim Notke" },
+      { q:"Be yourself; everyone else is already taken.", a:"Oscar Wilde" },
+      { q:"Stay hungry, stay foolish.", a:"Steve Jobs" },
+      { q:"You don't have to be perfect to be amazing.", a:"Unknown" },
+      { q:"Good things take time.", a:"Unknown" },
+      { q:"Done is better than perfect.", a:"Sheryl Sandberg" },
+      { q:"Create the things you wish existed.", a:"Unknown" },
+      { q:"Be a voice, not an echo.", a:"Albert Einstein" },
+      { q:"Simplicity is the ultimate sophistication.", a:"Leonardo da Vinci" },
+      { q:"Do it with passion or not at all.", a:"Unknown" },
+      { q:"Make it happen. Shock everyone.", a:"Unknown" },
+      { q:"Discipline is choosing between what you want now and what you want most.", a:"Abraham Lincoln" },
+      { q:"You glow differently when you're actually happy.", a:"Unknown" },
+    ];
+
+    const MARQUEE_ITEMS = [
+      "✦ dream big", "💫 stay curious", "✨ you got this",
+      "🌸 be kind", "⚡ stay focused", "🎯 keep going",
+      "🔥 no cap, you're built different", "💜 protect your peace",
+      "✦ consistency > perfection", "🌙 trust the process",
+      "💎 main character energy", "🌟 do it scared",
+    ];
+
+    function rndQuote() { return QUOTES[Math.floor(Math.random()*QUOTES.length)]; }
+
+    function refreshQuote() {
+      const q = rndQuote();
+      document.getElementById('quoteBig').innerText = `"${q.q}"`;
+      document.getElementById('quoteAuthorLine').innerText = `— ${q.a}`;
+    }
+
+    // ── MARQUEE ──────────────────────────────────────────────────────────
+    function buildMarquee() {
+      const items = [...MARQUEE_ITEMS,...MARQUEE_ITEMS];
+      document.getElementById('marqueeTrack').innerHTML =
+        items.map(t=>`<div class="marquee-item">${t}<span class="marquee-sep">◆</span></div>`).join('');
+    }
+
+    // ── SPLASH ───────────────────────────────────────────────────────────
+    window.addEventListener('DOMContentLoaded', () => {
+      loadTheme();
+      restoreCustomizer();
+
+      const q = rndQuote();
+      document.getElementById('spQuote').innerHTML = `"${q.q}" <br><span style="opacity:.45;font-style:normal;font-size:.75rem;">— ${q.a}</span>`;
+
+      buildMarquee();
+      refreshQuote();
+      updateClock();
+      setInterval(updateClock, 1000);
+      loadVibe();
+
+      const lastCity = localStorage.getItem('lastCity');
+      if (lastCity) { setTimeout(()=>{ document.getElementById('cityInput').value=lastCity; fetchWeather(); }, 3400); }
+
+      setTimeout(() => {
+        document.getElementById('splash').classList.add('gone');
+        setTimeout(() => {
+          document.getElementById('splash').style.display = 'none';
+          document.getElementById('main').style.display = 'block';
+        }, 860);
+      }, 2700);
+    });
+
+    // ── CLOCK ─────────────────────────────────────────────────────────────
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('clockTime').innerText = now.toLocaleTimeString('en-GB');
+      document.getElementById('londonTime').innerText = now.toLocaleTimeString('en-GB', { timeZone:'Europe/London', hour:'2-digit', minute:'2-digit' });
+      document.getElementById('clockDate').innerText = now.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'short' });
+      document.getElementById('clockSub').innerText = 'local time';
+      document.getElementById('statusDate').innerText = now.toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    }
+
+    // ── WEATHER ───────────────────────────────────────────────────────────
+    const WMO = {0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',51:'Light drizzle',53:'Drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',80:'Showers',95:'Thunderstorm'};
+    const WMO_I = {0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',51:'🌦️',53:'🌦️',61:'🌧️',63:'🌧️',65:'⛈️',71:'🌨️',73:'❄️',80:'🌦️',95:'⛈️'};
+
+    async function fetchWeather() {
+      const city = document.getElementById('cityInput').value.trim();
+      if (!city) return;
+      document.getElementById('wxStatus').innerText = 'Looking up…';
+      document.getElementById('wxResult').style.display = 'none';
+      try {
+        const geo = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(city)}&format=json&limit=1`);
+        const gd = await geo.json();
+        if (!gd.length) { document.getElementById('wxStatus').innerText = '❌ City not found'; return; }
+        const {lat,lon,display_name} = gd[0];
+        const wx = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`);
+        const wd = await wx.json();
+        const cw = wd.current_weather;
+        document.getElementById('wxTemp').innerText = Math.round(cw.temperature);
+        document.getElementById('wxCity').innerText = display_name.split(',').slice(0,2).join(', ');
+        document.getElementById('wxDesc').innerText = WMO[cw.weathercode] || 'Unknown';
+        document.getElementById('wxIcon').innerText = WMO_I[cw.weathercode] || '🌡️';
+        document.getElementById('wxWind').innerText = `💨 Wind ${cw.windspeed} km/h`;
+        document.getElementById('wxResult').style.display = 'block';
+        document.getElementById('wxStatus').innerText = '';
+        localStorage.setItem('lastCity', city);
+      } catch { document.getElementById('wxStatus').innerText = '⚠️ Could not load weather'; }
+    }
+
+    // ── VIBE CHECK ────────────────────────────────────────────────────────
+    function setVibe(el, vibe, msg) {
+      document.querySelectorAll('.vibe-btn').forEach(b=>b.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('vibeResult').innerText = msg;
+      localStorage.setItem('vibe', vibe);
+    }
+    function loadVibe() {
+      const v = localStorage.getItem('vibe');
+      if (!v) return;
+      const btn = document.querySelector(`[data-vibe="${v}"]`);
+      if (btn) btn.classList.add('active');
+    }
+
+    // ── CUSTOMIZER ────────────────────────────────────────────────────────
+    let custOpen = false;
+
+    function toggleCust() {
+      custOpen = !custOpen;
+      document.getElementById('custPanel').classList.toggle('open', custOpen);
+    }
+
+    function setPal(name, el) {
+      document.querySelectorAll('.pal-swatch').forEach(s=>s.classList.remove('on'));
+      el.classList.add('on');
+      name==='theme' ? window.BG.clearPalette() : window.BG.setPalette(name);
+      localStorage.setItem('bgPalette', name);
+    }
+
+    function setSpd(v) {
+      window.BG.setSpeed(v);
+      document.getElementById('spdVal').innerText = parseFloat(v).toFixed(1)+'×';
+      localStorage.setItem('bgSpeed', v);
+    }
+
+    function setOrbs(v) {
+      window.BG.setOrbCount(v);
+      document.getElementById('orbVal').innerText = v;
+      localStorage.setItem('bgOrbs', v);
+    }
+
+    function restoreCustomizer() {
+      const pal  = localStorage.getItem('bgPalette');
+      const spd  = localStorage.getItem('bgSpeed');
+      const orbs = localStorage.getItem('bgOrbs');
+      setTimeout(() => {
+        if (pal && pal !== 'theme') {
+          const el = document.querySelector(`.ps-${pal}`);
+          if (el) setPal(pal, el);
         }
-
-        function stopMusic() {
-            if(audio) { audio.pause(); audio.currentTime = 0; document.getElementById('musicStatus').innerText = "Music Stopped"; }
+        if (spd) {
+          document.querySelectorAll('.cust-slider')[0].value = spd;
+          setSpd(spd);
         }
-
-        // DIARY LOGIC (NEW HISTORY FEATURE)
-        function saveDiary() { 
-            const entry = document.getElementById('diary').value;
-            if(!entry) return;
-            let history = JSON.parse(localStorage.getItem('diaryHistory')) || [];
-            const timeStamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            history.unshift(timeStamp + ": " + entry);
-            localStorage.setItem('diaryHistory', JSON.stringify(history));
-            document.getElementById('diary').value = '';
-            showHistory();
+        if (orbs) {
+          document.querySelectorAll('.cust-slider')[1].value = orbs;
+          setOrbs(orbs);
         }
-
-        function showHistory() {
-            const history = JSON.parse(localStorage.getItem('diaryHistory')) || [];
-            document.getElementById('diaryList').innerHTML = history.map(item => `<div class="diary-entry">${item}</div>`).join('');
-        }
-
-        // GOALS LOGIC
-        function addGoal() {
-            const g = document.getElementById('newGoal').value;
-            if(!g) return;
-            const div = document.createElement('div');
-            div.style.marginBottom = "5px";
-            div.innerHTML = `<input type="checkbox"> <span>${g}</span>`;
-            document.getElementById('goalList').appendChild(div);
-            document.getElementById('newGoal').value = '';
-        }
-        function clearGoals() { document.getElementById('goalList').innerHTML = ''; }
-
-        // TIMER LOGIC
-        let countdown;
-        function toggleTimer() {
-            let s = document.getElementById('focusTime').value * 60;
-            const btn = document.getElementById('timerBtn');
-            const display = document.getElementById('timerDisplay');
-            if(btn.innerText === "Start Focus") {
-                clearInterval(countdown);
-                btn.innerText = "Stop";
-                countdown = setInterval(() => {
-                    s--;
-                    display.innerText = Math.floor(s/60) + ":" + (s%60 < 10 ? '0' : '') + (s%60);
-                    if(s <= 0) { clearInterval(countdown); alert("Done!"); btn.innerText = "Start Focus"; }
-                }, 1000);
-            } else {
-                clearInterval(countdown);
-                btn.innerText = "Start Focus";
-                display.innerText = document.getElementById('focusTime').value + ":00";
-            }
-        }
-
-        // LOAD SAVED DATA ON OPEN
-        window.onload = () => { showHistory(); }
-    </script>
+      }, 200);
+    }
+  </script>
 </body>
 </html>

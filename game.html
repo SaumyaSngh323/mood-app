@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Games – My Hub</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .game-tabs { display:flex; gap:8px; margin-bottom:22px; flex-wrap:wrap; }
+    .game-tab {
+      padding:8px 20px; border-radius:50px;
+      border:1px solid rgba(255,255,255,0.2);
+      background:rgba(255,255,255,0.07);
+      color:inherit; font-family:'Poppins',sans-serif;
+      font-size:0.82rem; font-weight:600; cursor:pointer; transition:0.3s;
+    }
+    .game-tab:hover { background:rgba(255,255,255,0.16); }
+    .game-tab.active { background:rgba(255,255,255,0.24); border-color:rgba(255,255,255,0.5); }
+
+    .game-area { display:none; }
+    .game-area.active { display:block; }
+
+    .game-stats {
+      display:flex; gap:12px; justify-content:center;
+      margin-bottom:18px; flex-wrap:wrap;
+    }
+    .game-stat {
+      text-align:center;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.13);
+      border-radius:14px;
+      padding:10px 18px;
+      min-width:80px;
+    }
+    .gstat-num { font-size:1.5rem; font-weight:700; }
+    .gstat-lbl { font-size:0.68rem; opacity:0.55; }
+
+    /* ══ TRIVIA ══ */
+    .trivia-question {
+      font-size:1.05rem;
+      font-weight:600;
+      line-height:1.55;
+      text-align:center;
+      margin-bottom:20px;
+      min-height:60px;
+      padding:0 10px;
+    }
+
+    .trivia-options {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-bottom:16px;
+    }
+
+    .trivia-opt {
+      padding:13px 16px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.08);
+      color:inherit;
+      font-family:'Poppins',sans-serif;
+      font-size:0.85rem;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.25s;
+      text-align:left;
+      line-height:1.4;
+    }
+    .trivia-opt:hover:not(:disabled) { background:rgba(255,255,255,0.18); transform:translateY(-2px); }
+    .trivia-opt.correct  { background:rgba(80,220,130,0.3); border-color:rgba(80,220,130,0.7); }
+    .trivia-opt.wrong    { background:rgba(255,90,90,0.25);  border-color:rgba(255,90,90,0.6); }
+    .trivia-opt:disabled { cursor:default; }
+
+    .trivia-feedback {
+      text-align:center;
+      font-size:0.9rem;
+      min-height:28px;
+      margin-bottom:12px;
+      font-weight:600;
+    }
+
+    .trivia-category {
+      text-align:center;
+      font-size:0.72rem;
+      opacity:0.45;
+      margin-bottom:12px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+    }
+
+    /* ══ WORD SCRAMBLE ══ */
+    .scramble-word {
+      text-align:center;
+      font-size:3rem;
+      font-weight:700;
+      letter-spacing:10px;
+      margin:16px 0;
+      text-transform:uppercase;
+    }
+
+    .scramble-hint {
+      text-align:center;
+      font-size:0.8rem;
+      opacity:0.55;
+      margin-bottom:16px;
+      min-height:22px;
+    }
+
+    .scramble-category {
+      text-align:center;
+      font-size:0.72rem;
+      opacity:0.4;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      margin-bottom:10px;
+    }
+
+    .scramble-input-row {
+      display:flex;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .scramble-input-row input {
+      flex:1;
+      font-size:1.1rem;
+      font-weight:700;
+      text-align:center;
+      text-transform:uppercase;
+      letter-spacing:3px;
+    }
+
+    .scramble-result {
+      text-align:center;
+      font-size:1rem;
+      font-weight:600;
+      min-height:30px;
+      margin-bottom:8px;
+    }
+
+    .scramble-def {
+      text-align:center;
+      font-size:0.8rem;
+      opacity:0.6;
+      margin-bottom:12px;
+      min-height:20px;
+      font-style:italic;
+    }
+
+    /* ══ QUICK MATH ══ */
+    .math-equation {
+      text-align:center;
+      font-size:3.5rem;
+      font-weight:700;
+      margin:12px 0 20px;
+      letter-spacing:2px;
+      min-height:70px;
+    }
+
+    .math-options {
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+      max-width:340px;
+      margin:0 auto 16px;
+    }
+
+    .math-opt {
+      padding:16px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(255,255,255,0.08);
+      color:inherit;
+      font-family:'Poppins',sans-serif;
+      font-size:1.3rem;
+      font-weight:700;
+      cursor:pointer;
+      transition:0.2s;
+      text-align:center;
+    }
+    .math-opt:hover:not(:disabled) { background:rgba(255,255,255,0.2); transform:scale(1.04); }
+    .math-opt.correct { background:rgba(80,220,130,0.3); border-color:rgba(80,220,130,0.7); }
+    .math-opt.wrong   { background:rgba(255,90,90,0.25);  border-color:rgba(255,90,90,0.6); }
+    .math-opt:disabled { cursor:default; }
+
+    .math-timer-bar {
+      height:6px;
+      border-radius:4px;
+      background:rgba(255,255,255,0.12);
+      margin-bottom:16px;
+      overflow:hidden;
+    }
+    .math-timer-fill {
+      height:100%;
+      border-radius:4px;
+      background:currentColor;
+      transition:width 0.1s linear;
+    }
+
+    .math-level {
+      text-align:center;
+      font-size:0.72rem;
+      opacity:0.45;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      margin-bottom:6px;
+    }
+
+    .math-feedback {
+      text-align:center;
+      font-size:0.9rem;
+      min-height:28px;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+  </style>
+</head>
+<body class="cute-mode">
+  <canvas id="bgCanvas"></canvas>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-logo">✨ My Hub</a>
+    <ul class="nav-links">
+      <li><a href="diary.html">Diary</a></li>
+      <li><a href="timer.html">Timer</a></li>
+      <li><a href="music.html">Music</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="wellness.html">Wellness</a></li>
+      <li><a href="game.html" class="active">Game</a></li>
+    </ul>
+    <div class="theme-btns">
+      <button class="theme-btn" onclick="setTheme('cute')">Cute</button>
+      <button class="theme-btn" onclick="setTheme('classy')">Classy</button>
+      <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="glass-card" style="max-width:600px;">
+      <h1>🎮 Mini Games</h1>
+      <p class="subtitle">Actually fun games to challenge your brain!</p>
+
+      <div class="game-tabs">
+        <button class="game-tab active" onclick="switchGame('trivia',this)">🧠 Trivia</button>
+        <button class="game-tab" onclick="switchGame('scramble',this)">🔤 Word Scramble</button>
+        <button class="game-tab" onclick="switchGame('math',this)">⚡ Quick Math</button>
+      </div>
+
+      <!-- ══════════════ TRIVIA ══════════════ -->
+      <div class="game-area active" id="game-trivia">
+        <div class="game-stats">
+          <div class="game-stat"><div class="gstat-num" id="tScore">0</div><div class="gstat-lbl">Score</div></div>
+          <div class="game-stat"><div class="gstat-num" id="tStreak">0🔥</div><div class="gstat-lbl">Streak</div></div>
+          <div class="game-stat"><div class="gstat-num" id="tBest">0</div><div class="gstat-lbl">Best</div></div>
+          <div class="game-stat"><div class="gstat-num" id="tQ">0/10</div><div class="gstat-lbl">Question</div></div>
+        </div>
+        <div class="trivia-category" id="tCategory"></div>
+        <div class="trivia-question" id="tQuestion">Press Start to play!</div>
+        <div class="trivia-options" id="tOptions"></div>
+        <div class="trivia-feedback" id="tFeedback"></div>
+        <button class="btn" id="tStartBtn" onclick="startTrivia()" style="max-width:200px;margin:0 auto;display:block;">▶ Start Game</button>
+      </div>
+
+      <!-- ══════════════ WORD SCRAMBLE ══════════════ -->
+      <div class="game-area" id="game-scramble">
+        <div class="game-stats">
+          <div class="game-stat"><div class="gstat-num" id="wScore">0</div><div class="gstat-lbl">Score</div></div>
+          <div class="game-stat"><div class="gstat-num" id="wStreak">0🔥</div><div class="gstat-lbl">Streak</div></div>
+          <div class="game-stat"><div class="gstat-num" id="wSkips">3</div><div class="gstat-lbl">Skips left</div></div>
+        </div>
+        <div class="scramble-category" id="wCategory"></div>
+        <div class="scramble-word" id="wScrambled">?????</div>
+        <div class="scramble-hint" id="wHint">Press Start to play!</div>
+        <div class="scramble-input-row">
+          <input type="text" id="wInput" placeholder="Your answer…" onkeydown="if(event.key==='Enter') checkScramble()" autocomplete="off" autocorrect="off" spellcheck="false">
+          <button class="btn" style="width:auto;padding:10px 18px;" onclick="checkScramble()">✓</button>
+        </div>
+        <div class="scramble-result" id="wResult"></div>
+        <div class="scramble-def" id="wDef"></div>
+        <div class="btn-row" style="max-width:340px;margin:0 auto;">
+          <button class="btn" id="wStartBtn" onclick="startScramble()">▶ Start</button>
+          <button class="btn" id="wSkipBtn" onclick="skipScramble()" disabled>⏭ Skip</button>
+          <button class="btn" id="wHintBtn" onclick="showHint()" disabled>💡 Hint</button>
+        </div>
+      </div>
+
+      <!-- ══════════════ QUICK MATH ══════════════ -->
+      <div class="game-area" id="game-math">
+        <div class="game-stats">
+          <div class="game-stat"><div class="gstat-num" id="mScore">0</div><div class="gstat-lbl">Score</div></div>
+          <div class="game-stat"><div class="gstat-num" id="mStreak">0🔥</div><div class="gstat-lbl">Streak</div></div>
+          <div class="game-stat"><div class="gstat-num" id="mBest">0</div><div class="gstat-lbl">Best</div></div>
+          <div class="game-stat"><div class="gstat-num" id="mLives">❤️❤️❤️</div><div class="gstat-lbl">Lives</div></div>
+        </div>
+        <div class="math-level" id="mLevel">Level 1 · Basic</div>
+        <div class="math-timer-bar"><div class="math-timer-fill" id="mTimerFill" style="width:100%"></div></div>
+        <div class="math-equation" id="mEquation">?</div>
+        <div class="math-options" id="mOptions"></div>
+        <div class="math-feedback" id="mFeedback"></div>
+        <button class="btn" id="mStartBtn" onclick="startMath()" style="max-width:200px;margin:0 auto;display:block;">▶ Start Game</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="bg.js"></script>
+  <script>
+    function switchGame(id, btn) {
+      document.querySelectorAll('.game-tab').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.game-area').forEach(a=>a.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('game-'+id).classList.add('active');
+    }
+
+    // ══════════════════════════════════════════════════
+    //  TRIVIA QUIZ
+    // ══════════════════════════════════════════════════
+    const TRIVIA = [
+      { q:"Which planet has the most moons?", opts:["Jupiter","Saturn","Uranus","Neptune"], ans:1, cat:"🌌 Space" },
+      { q:"What is the capital of Japan?", opts:["Beijing","Seoul","Tokyo","Bangkok"], ans:2, cat:"🌍 Geography" },
+      { q:"Who painted the Mona Lisa?", opts:["Picasso","Van Gogh","Da Vinci","Michelangelo"], ans:2, cat:"🎨 Art" },
+      { q:"How many sides does a hexagon have?", opts:["5","6","7","8"], ans:1, cat:"📐 Math" },
+      { q:"What is the fastest land animal?", opts:["Lion","Horse","Cheetah","Leopard"], ans:2, cat:"🐾 Animals" },
+      { q:"In what year did the Titanic sink?", opts:["1905","1912","1920","1898"], ans:1, cat:"📚 History" },
+      { q:"Which element has the symbol 'O'?", opts:["Gold","Oxygen","Osmium","Oganesson"], ans:1, cat:"🧪 Science" },
+      { q:"What is the largest ocean?", opts:["Atlantic","Indian","Arctic","Pacific"], ans:3, cat:"🌊 Geography" },
+      { q:"How many strings does a standard guitar have?", opts:["4","5","6","7"], ans:2, cat:"🎵 Music" },
+      { q:"Which country invented pizza?", opts:["France","Greece","Italy","Spain"], ans:2, cat:"🍕 Food" },
+      { q:"What is the square root of 144?", opts:["11","12","13","14"], ans:1, cat:"📐 Math" },
+      { q:"Who wrote 'Harry Potter'?", opts:["Tolkien","C.S. Lewis","J.K. Rowling","Roald Dahl"], ans:2, cat:"📖 Books" },
+      { q:"Which is the smallest country in the world?", opts:["Monaco","San Marino","Vatican City","Liechtenstein"], ans:2, cat:"🌍 Geography" },
+      { q:"What gas do plants absorb from the air?", opts:["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"], ans:2, cat:"🧪 Science" },
+      { q:"Which sport uses a shuttlecock?", opts:["Tennis","Badminton","Squash","Volleyball"], ans:1, cat:"⚽ Sports" },
+      { q:"How many bones are in the adult human body?", opts:["196","206","216","226"], ans:1, cat:"🧬 Biology" },
+      { q:"What is the longest river in the world?", opts:["Amazon","Nile","Yangtze","Mississippi"], ans:1, cat:"🌍 Geography" },
+      { q:"Which planet is known as the Red Planet?", opts:["Venus","Jupiter","Mars","Saturn"], ans:2, cat:"🌌 Space" },
+      { q:"Who is known as the father of computers?", opts:["Einstein","Turing","Babbage","Newton"], ans:2, cat:"💻 Tech" },
+      { q:"What is the chemical symbol for gold?", opts:["Go","Gd","Au","Ag"], ans:2, cat:"🧪 Science" },
+      { q:"How many players are on a basketball team (on court)?", opts:["4","5","6","7"], ans:1, cat:"⚽ Sports" },
+      { q:"Which country is home to the kangaroo?", opts:["New Zealand","South Africa","Australia","Brazil"], ans:2, cat:"🐾 Animals" },
+      { q:"What is 15% of 200?", opts:["25","30","35","40"], ans:1, cat:"📐 Math" },
+      { q:"Which famous scientist developed the theory of relativity?", opts:["Newton","Darwin","Einstein","Hawking"], ans:2, cat:"🧪 Science" },
+      { q:"What is the hardest natural substance on Earth?", opts:["Steel","Quartz","Diamond","Titanium"], ans:2, cat:"🧪 Science" },
+    ];
+
+    let tQueue=[], tScore=0, tStreak=0, tQNum=0, tAnswered=false;
+
+    function startTrivia() {
+      tScore=0; tStreak=0; tQNum=0;
+      tQueue = [...TRIVIA].sort(()=>Math.random()-0.5).slice(0,10);
+      document.getElementById('tStartBtn').style.display='none';
+      updateTriviaStats();
+      nextTrivia();
+    }
+
+    function nextTrivia() {
+      if (tQNum >= tQueue.length) { endTrivia(); return; }
+      tAnswered = false;
+      const item = tQueue[tQNum];
+      document.getElementById('tCategory').innerText = item.cat;
+      document.getElementById('tQuestion').innerText = item.q;
+      document.getElementById('tFeedback').innerText = '';
+      document.getElementById('tQ').innerText = `${tQNum+1}/10`;
+      const optsEl = document.getElementById('tOptions');
+      optsEl.innerHTML = item.opts.map((o,i)=>`
+        <button class="trivia-opt" onclick="answerTrivia(${i})">${o}</button>
+      `).join('');
+    }
+
+    function answerTrivia(idx) {
+      if (tAnswered) return;
+      tAnswered = true;
+      const item = tQueue[tQNum];
+      const btns = document.querySelectorAll('.trivia-opt');
+      btns.forEach(b=>b.disabled=true);
+      if (idx === item.ans) {
+        btns[idx].classList.add('correct');
+        tScore += 10 + Math.min(tStreak*2, 20);
+        tStreak++;
+        document.getElementById('tFeedback').innerText = ['✅ Correct!','🎉 Nailed it!','🔥 Brilliant!','⭐ Perfect!'][Math.min(tStreak-1,3)];
+      } else {
+        btns[idx].classList.add('wrong');
+        btns[item.ans].classList.add('correct');
+        tStreak = 0;
+        document.getElementById('tFeedback').innerText = `❌ Nope! Answer: ${item.opts[item.ans]}`;
+      }
+      updateTriviaStats();
+      tQNum++;
+      setTimeout(nextTrivia, 1400);
+    }
+
+    function endTrivia() {
+      const best = Math.max(parseInt(localStorage.getItem('triviaBest')||'0'), tScore);
+      localStorage.setItem('triviaBest', best);
+      document.getElementById('tBest').innerText = best;
+      document.getElementById('tQuestion').innerText = `Game over! You scored ${tScore}/130 🎉`;
+      document.getElementById('tCategory').innerText = tScore>80?'🏆 Amazing!':tScore>50?'👍 Good job!':'💪 Keep practising!';
+      document.getElementById('tOptions').innerHTML='';
+      document.getElementById('tFeedback').innerText='';
+      document.getElementById('tStartBtn').innerText='🔄 Play Again';
+      document.getElementById('tStartBtn').style.display='block';
+    }
+
+    function updateTriviaStats() {
+      document.getElementById('tScore').innerText  = tScore;
+      document.getElementById('tStreak').innerText = tStreak+'🔥';
+      document.getElementById('tBest').innerText   = Math.max(parseInt(localStorage.getItem('triviaBest')||'0'), tScore);
+    }
+
+    // ══════════════════════════════════════════════════
+    //  WORD SCRAMBLE
+    // ══════════════════════════════════════════════════
+    const WORDS = [
+      {w:'OCEAN',    cat:'🌊 Nature',  hint:'Body of saltwater', def:'A vast body of saltwater covering most of Earth'},
+      {w:'GUITAR',   cat:'🎵 Music',   hint:'6-string instrument', def:'A stringed musical instrument played with fingers or a pick'},
+      {w:'JUNGLE',   cat:'🌿 Nature',  hint:'Dense tropical forest', def:'Land overgrown with dense vegetation in the tropics'},
+      {w:'PLANET',   cat:'🌌 Space',   hint:'Orbits a star', def:'A large body orbiting a star, including Earth'},
+      {w:'COFFEE',   cat:'☕ Food',    hint:'Morning drink', def:'A popular hot drink made from roasted beans'},
+      {w:'BRIDGE',   cat:'🏗️ Places',  hint:'Crosses a gap', def:'A structure built to span a physical obstacle'},
+      {w:'CASTLE',   cat:'🏰 History', hint:'Medieval fortress', def:'A large fortified medieval building'},
+      {w:'DIAMOND',  cat:'💎 Science', hint:'Hardest mineral', def:'The hardest naturally occurring mineral on Earth'},
+      {w:'FALCON',   cat:'🐦 Animals', hint:'Fast bird', def:'A bird of prey known for incredible speed in a dive'},
+      {w:'GARDEN',   cat:'🌸 Nature',  hint:'Where flowers grow', def:'A piece of ground for growing flowers, fruit or vegetables'},
+      {w:'LIBRARY',  cat:'📚 Places',  hint:'Full of books', def:'A building or room containing a collection of books'},
+      {w:'NOODLES',  cat:'🍜 Food',    hint:'Long pasta', def:'A type of food made from unleavened dough, cut into strips'},
+      {w:'PENGUIN',  cat:'🐧 Animals', hint:'Arctic bird', def:'A flightless seabird native to the Southern Hemisphere'},
+      {w:'RAINBOW',  cat:'🌈 Nature',  hint:'After the rain', def:'An arc of colours in the sky caused by light refraction'},
+      {w:'TEMPLE',   cat:'🏛️ History', hint:'Place of worship', def:'A building used for religious or spiritual activities'},
+      {w:'VITAMIN',  cat:'🧬 Science', hint:'Keeps you healthy', def:'A natural substance essential for body growth and function'},
+      {w:'WHISPER',  cat:'💬 Words',   hint:'Speak very quietly', def:'To speak very softly, especially to avoid being heard'},
+      {w:'ECLIPSE',  cat:'🌌 Space',   hint:'Sun hides behind moon', def:'When one celestial body moves into the shadow of another'},
+      {w:'LANTERN',  cat:'🏮 Objects', hint:'Portable light', def:'A transparent case protecting a light from wind'},
+      {w:'THUNDER',  cat:'⛈️ Weather', hint:'Sound of lightning', def:'The loud rumbling sound caused by lightning'},
+      {w:'COMPASS',  cat:'🧭 Objects', hint:'Shows direction', def:'A tool used for finding direction using a magnetic needle'},
+      {w:'DOLPHIN',  cat:'🐬 Animals', hint:'Smart sea mammal', def:'A highly intelligent marine mammal known for playfulness'},
+      {w:'FREEDOM',  cat:'💬 Words',   hint:'Being free', def:'The power to act or speak without restraint'},
+      {w:'VOLCANO',  cat:'🌋 Nature',  hint:'Erupts lava', def:'A mountain that erupts hot liquid rock and ash'},
+      {w:'COURAGE',  cat:'💬 Words',   hint:'Being brave', def:'Strength in the face of pain, difficulty or fear'},
+    ];
+
+    let wCurrent=null, wScore=0, wStreak=0, wSkips=3, wHintUsed=false, wRunning=false;
+
+    function scramble(word) {
+      const arr = word.split('');
+      for (let i=arr.length-1;i>0;i--) {
+        const j=Math.floor(Math.random()*(i+1));
+        [arr[i],arr[j]]=[arr[j],arr[i]];
+      }
+      const s = arr.join('');
+      return s === word ? scramble(word) : s;
+    }
+
+    function startScramble() {
+      wRunning=true; wScore=0; wStreak=0; wSkips=3;
+      updateScrambleStats();
+      document.getElementById('wStartBtn').innerText='🔄 New Word';
+      document.getElementById('wSkipBtn').disabled=false;
+      document.getElementById('wHintBtn').disabled=false;
+      nextScramble();
+    }
+
+    function nextScramble() {
+      wCurrent = WORDS[Math.floor(Math.random()*WORDS.length)];
+      wHintUsed = false;
+      document.getElementById('wScrambled').innerText = scramble(wCurrent.w);
+      document.getElementById('wCategory').innerText  = wCurrent.cat;
+      document.getElementById('wHint').innerText      = '💡 Type your answer and press Enter';
+      document.getElementById('wResult').innerText    = '';
+      document.getElementById('wDef').innerText       = '';
+      document.getElementById('wInput').value         = '';
+      document.getElementById('wInput').focus();
+      document.getElementById('wSkipBtn').disabled = wSkips <= 0;
+    }
+
+    function checkScramble() {
+      if (!wCurrent) return;
+      const ans = document.getElementById('wInput').value.trim().toUpperCase();
+      if (!ans) return;
+      if (ans === wCurrent.w) {
+        wScore += wHintUsed ? 5 : 10;
+        wStreak++;
+        document.getElementById('wResult').innerText = '✅ Correct! +' + (wHintUsed?5:10) + ' pts';
+        document.getElementById('wDef').innerText    = wCurrent.def;
+        updateScrambleStats();
+        setTimeout(nextScramble, 1600);
+      } else {
+        wStreak = 0;
+        document.getElementById('wResult').innerText = '❌ Not quite — try again!';
+        document.getElementById('wInput').value = '';
+        document.getElementById('wInput').focus();
+        updateScrambleStats();
+      }
+    }
+
+    function skipScramble() {
+      if (wSkips<=0) return;
+      wSkips--; wStreak=0;
+      document.getElementById('wResult').innerText = `⏭ Skipped — it was "${wCurrent.w}"`;
+      document.getElementById('wDef').innerText    = wCurrent.def;
+      document.getElementById('wSkipBtn').disabled = wSkips <= 0;
+      updateScrambleStats();
+      setTimeout(nextScramble, 1600);
+    }
+
+    function showHint() {
+      if (!wCurrent) return;
+      wHintUsed=true;
+      document.getElementById('wHint').innerText = '💡 Hint: ' + wCurrent.hint;
+    }
+
+    function updateScrambleStats() {
+      document.getElementById('wScore').innerText  = wScore;
+      document.getElementById('wStreak').innerText = wStreak+'🔥';
+      document.getElementById('wSkips').innerText  = wSkips;
+    }
+
+    // ══════════════════════════════════════════════════
+    //  QUICK MATH
+    // ══════════════════════════════════════════════════
+    let mScore=0, mStreak=0, mLives=3, mAnswer=0, mTimer=null, mTimeLeft=0, mRunning=false, mLevel=1;
+
+    const LEVELS = [
+      { name:'Basic',    time:8000, ops:['+','-'],       range:[1,20]  },
+      { name:'Medium',   time:7000, ops:['+','-','×'],   range:[1,30]  },
+      { name:'Hard',     time:6000, ops:['+','-','×','÷'],range:[2,40] },
+      { name:'Expert',   time:5000, ops:['+','-','×'],   range:[5,50]  },
+      { name:'Insane',   time:4000, ops:['×','÷','+'],   range:[5,99]  },
+    ];
+
+    function startMath() {
+      mScore=0; mStreak=0; mLives=3; mLevel=1; mRunning=true;
+      document.getElementById('mStartBtn').style.display='none';
+      updateMathStats();
+      nextMath();
+    }
+
+    function nextMath() {
+      if (mLives<=0) { endMath(); return; }
+      clearInterval(mTimer);
+      const lv = LEVELS[Math.min(mLevel-1, LEVELS.length-1)];
+      document.getElementById('mLevel').innerText = `Level ${mLevel} · ${lv.name}`;
+
+      const op = lv.ops[Math.floor(Math.random()*lv.ops.length)];
+      let a,b;
+      if (op==='÷') {
+        b = Math.floor(Math.random()*(9))+2;
+        mAnswer = Math.floor(Math.random()*10)+1;
+        a = b * mAnswer;
+      } else if (op==='×') {
+        a = Math.floor(Math.random()*lv.range[1]/5)+2;
+        b = Math.floor(Math.random()*lv.range[1]/5)+2;
+        mAnswer = a*b;
+      } else {
+        a = Math.floor(Math.random()*(lv.range[1]-lv.range[0]))+lv.range[0];
+        b = Math.floor(Math.random()*(lv.range[1]-lv.range[0]))+lv.range[0];
+        if (op==='-') { if(b>a)[a,b]=[b,a]; mAnswer=a-b; }
+        else { mAnswer=a+b; }
+      }
+
+      document.getElementById('mEquation').innerText = `${a} ${op} ${b} = ?`;
+      document.getElementById('mFeedback').innerText = '';
+
+      const wrongs = new Set();
+      while (wrongs.size<3) {
+        let w = mAnswer + (Math.floor(Math.random()*10)-5);
+        if (w!==mAnswer && w>=0) wrongs.add(w);
+      }
+      const choices = [...wrongs, mAnswer].sort(()=>Math.random()-0.5);
+
+      document.getElementById('mOptions').innerHTML = choices.map(c=>`
+        <button class="math-opt" onclick="answerMath(${c})">${c}</button>
+      `).join('');
+
+      mTimeLeft = lv.time;
+      const start = Date.now();
+      document.getElementById('mTimerFill').style.width='100%';
+      mTimer = setInterval(()=>{
+        const elapsed = Date.now()-start;
+        const pct = Math.max(0, 100-(elapsed/lv.time)*100);
+        document.getElementById('mTimerFill').style.width=pct+'%';
+        if (elapsed >= lv.time) { timeoutMath(); }
+      }, 80);
+    }
+
+    function answerMath(val) {
+      clearInterval(mTimer);
+      const btns = document.querySelectorAll('.math-opt');
+      btns.forEach(b=>{ b.disabled=true; if(parseInt(b.innerText)===mAnswer) b.classList.add('correct'); });
+
+      if (val===mAnswer) {
+        btns.forEach(b=>{ if(parseInt(b.innerText)===val) b.classList.add('correct'); });
+        mScore += 10 + mStreak*2;
+        mStreak++;
+        if (mStreak%5===0) mLevel = Math.min(mLevel+1, LEVELS.length);
+        document.getElementById('mFeedback').innerText = ['✅ Correct!','🔥 On fire!','⚡ Fast!','🎯 Perfect!'][Math.min(Math.floor(mStreak/3),3)];
+      } else {
+        btns.forEach(b=>{ if(parseInt(b.innerText)===val) b.classList.add('wrong'); });
+        mLives--;
+        mStreak=0;
+        document.getElementById('mFeedback').innerText = `❌ Answer was ${mAnswer}`;
+      }
+      updateMathStats();
+      setTimeout(nextMath, 1000);
+    }
+
+    function timeoutMath() {
+      clearInterval(mTimer);
+      mLives--; mStreak=0;
+      document.getElementById('mFeedback').innerText = `⏰ Too slow! Answer: ${mAnswer}`;
+      document.querySelectorAll('.math-opt').forEach(b=>{ b.disabled=true; if(parseInt(b.innerText)===mAnswer) b.classList.add('correct'); });
+      updateMathStats();
+      setTimeout(nextMath, 1100);
+    }
+
+    function endMath() {
+      mRunning=false;
+      const best = Math.max(parseInt(localStorage.getItem('mathBest')||'0'), mScore);
+      localStorage.setItem('mathBest', best);
+      document.getElementById('mEquation').innerText = `Game over! 🎮`;
+      document.getElementById('mFeedback').innerText = `Final score: ${mScore} pts (Best: ${best})`;
+      document.getElementById('mOptions').innerHTML='';
+      document.getElementById('mTimerFill').style.width='0%';
+      document.getElementById('mStartBtn').innerText='🔄 Play Again';
+      document.getElementById('mStartBtn').style.display='block';
+    }
+
+    function updateMathStats() {
+      document.getElementById('mScore').innerText  = mScore;
+      document.getElementById('mStreak').innerText = mStreak+'🔥';
+      document.getElementById('mBest').innerText   = Math.max(parseInt(localStorage.getItem('mathBest')||'0'), mScore);
+      document.getElementById('mLives').innerText  = '❤️'.repeat(Math.max(0,mLives)) + '🖤'.repeat(Math.max(0,3-mLives));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wellness – My Hub</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    /* WATER */
+    .water-glasses {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 10px 0 16px;
+    }
+
+    .glass {
+      width: 48px;
+      height: 60px;
+      border-radius: 4px 4px 10px 10px;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.06);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .glass.filled { border-color: rgba(100,200,255,0.7); }
+
+    .glass-fill {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 0%;
+      background: linear-gradient(to top, rgba(80,180,255,0.8), rgba(120,220,255,0.5));
+      transition: height 0.4s cubic-bezier(.22,.68,0,1.2);
+    }
+
+    .glass.filled .glass-fill { height: 100%; }
+    .glass-icon {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 1.3rem;
+      z-index: 1;
+    }
+
+    .water-label { font-size: 0.82rem; opacity: 0.65; }
+    .water-goal-row { display:flex; align-items:center; gap:10px; margin-top:10px; font-size:0.82rem; opacity:0.7; }
+    .water-goal-row input { width:60px; padding:6px 10px; font-size:0.85rem; }
+
+    /* SLEEP */
+    .sleep-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 10px 0;
+    }
+
+    .sleep-icon { font-size: 2rem; }
+
+    .sleep-slider-wrap { flex: 1; }
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.15);
+      outline: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: currentColor;
+      cursor: pointer;
+      border: 2px solid rgba(255,255,255,0.4);
+    }
+
+    .sleep-val { font-size: 1.4rem; font-weight: 700; min-width: 60px; text-align: right; }
+    .sleep-label { font-size: 0.75rem; opacity: 0.6; margin-top: 4px; }
+
+    /* HABITS */
+    .habits-list { display: flex; flex-direction: column; gap: 8px; }
+    .habit-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      cursor: pointer;
+      transition: 0.25s;
+      user-select: none;
+    }
+    .habit-row.done { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.3); }
+    .habit-icon { font-size: 1.4rem; }
+    .habit-name { flex: 1; font-size: 0.88rem; font-weight: 600; }
+    .habit-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; transition: 0.25s;
+    }
+    .habit-row.done .habit-check { background: rgba(100,220,130,0.5); border-color: rgba(100,220,130,0.8); }
+
+    /* SUMMARY RING */
+    .summary-row {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .summary-stat {
+      text-align: center;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 14px 20px;
+      min-width: 90px;
+    }
+    .stat-big { font-size: 1.8rem; font-weight: 700; }
+    .stat-lbl { font-size: 0.7rem; opacity: 0.55; margin-top: 2px; }
+
+    .streak-banner {
+      text-align: center;
+      font-size: 0.9rem;
+      opacity: 0.75;
+      margin-top: 10px;
+    }
+
+    .section-label { font-size: 0.76rem; font-weight: 600; opacity: 0.55; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+  </style>
+</head>
+<body class="cute-mode">
+  <canvas id="bgCanvas"></canvas>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-logo">✨ My Hub</a>
+    <ul class="nav-links">
+      <li><a href="diary.html">Diary</a></li>
+      <li><a href="timer.html">Timer</a></li>
+      <li><a href="music.html">Music</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="wellness.html" class="active">Wellness</a></li>
+      <li><a href="game.html">Game</a></li>
+    </ul>
+    <div class="theme-btns">
+      <button class="theme-btn" onclick="setTheme('cute')">Cute</button>
+      <button class="theme-btn" onclick="setTheme('classy')">Classy</button>
+      <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="glass-card" style="max-width:820px;">
+      <h1>💧 Wellness Tracker</h1>
+      <p class="subtitle">Track your water, sleep, and daily habits.</p>
+
+      <!-- SUMMARY -->
+      <div class="summary-row" id="summaryRow">
+        <div class="summary-stat"><div class="stat-big" id="sumWater">0</div><div class="stat-lbl">glasses today</div></div>
+        <div class="summary-stat"><div class="stat-big" id="sumSleep">—</div><div class="stat-lbl">hours sleep</div></div>
+        <div class="summary-stat"><div class="stat-big" id="sumHabits">0</div><div class="stat-lbl">habits done</div></div>
+        <div class="summary-stat"><div class="stat-big" id="sumStreak">0🔥</div><div class="stat-lbl">day streak</div></div>
+      </div>
+
+      <!-- WATER -->
+      <div class="widget-box" style="margin-top:18px;">
+        <div class="section-label">💧 Water Intake</div>
+        <div class="water-glasses" id="waterGlasses"></div>
+        <div class="water-label" id="waterLabel">Tap a glass to log water</div>
+        <div class="water-goal-row">
+          Goal:
+          <input type="number" id="waterGoal" value="8" min="1" max="20" onchange="buildGlasses()">
+          glasses/day
+          <button class="btn" style="width:auto;padding:6px 16px;font-size:0.75rem;" onclick="resetWater()">Reset</button>
+        </div>
+      </div>
+
+      <!-- SLEEP -->
+      <div class="widget-box">
+        <div class="section-label">😴 Sleep Log</div>
+        <div class="sleep-row">
+          <div class="sleep-icon">🌙</div>
+          <div class="sleep-slider-wrap">
+            <input type="range" id="sleepSlider" min="0" max="12" step="0.5" value="0" oninput="updateSleep()">
+            <div class="sleep-label" id="sleepLabel">Slide to log last night's sleep</div>
+          </div>
+          <div class="sleep-val" id="sleepVal">—</div>
+        </div>
+        <button class="btn" style="margin-top:8px;" onclick="saveSleep()">Save Sleep</button>
+      </div>
+
+      <!-- HABITS -->
+      <div class="widget-box">
+        <div class="section-label">✅ Daily Habits</div>
+        <div class="habits-list" id="habitsList"></div>
+        <div class="streak-banner" id="streakBanner"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="bg.js"></script>
+  <script>
+    const HABITS = [
+      { id:'exercise',  icon:'🏃', name:'Exercise / Move your body' },
+      { id:'meditate',  icon:'🧘', name:'Meditate / Breathe' },
+      { id:'reading',   icon:'📚', name:'Read for 20 minutes' },
+      { id:'nophone',   icon:'📵', name:'Phone-free morning' },
+      { id:'gratitude', icon:'🙏', name:'Write 3 things you\'re grateful for' },
+      { id:'outside',   icon:'🌿', name:'Go outside / Fresh air' },
+      { id:'sleep9',    icon:'🛏️',  name:'In bed before midnight' },
+    ];
+
+    const TODAY = new Date().toISOString().slice(0,10);
+
+    function getData() {
+      return JSON.parse(localStorage.getItem('wellness_' + TODAY) || '{"water":0,"goal":8,"sleep":null,"habits":{}}');
+    }
+    function saveData(d) { localStorage.setItem('wellness_' + TODAY, JSON.stringify(d)); }
+
+    // ── WATER ──────────────────────────────────────────────
+    function buildGlasses() {
+      const d = getData();
+      const goal = parseInt(document.getElementById('waterGoal').value) || 8;
+      d.goal = goal;
+      saveData(d);
+      const wrap = document.getElementById('waterGlasses');
+      wrap.innerHTML = Array.from({length: goal}, (_, i) => `
+        <div class="glass ${i < d.water ? 'filled' : ''}" onclick="logWater(${i+1})">
+          <div class="glass-fill"></div>
+          <div class="glass-icon">${i < d.water ? '💧' : '🫗'}</div>
+        </div>
+      `).join('');
+      document.getElementById('waterLabel').innerText =
+        d.water === 0 ? 'Tap a glass to log water' :
+        d.water >= goal ? `🎉 Goal reached! ${d.water} glasses today` :
+        `${d.water} of ${goal} glasses — keep going!`;
+      updateSummary();
+    }
+
+    function logWater(n) {
+      const d = getData();
+      d.water = d.water === n ? n - 1 : n;
+      saveData(d);
+      buildGlasses();
+    }
+
+    function resetWater() {
+      const d = getData(); d.water = 0; saveData(d); buildGlasses();
+    }
+
+    // ── SLEEP ──────────────────────────────────────────────
+    function updateSleep() {
+      const v = parseFloat(document.getElementById('sleepSlider').value);
+      document.getElementById('sleepVal').innerText = v > 0 ? v + 'h' : '—';
+      const q = v < 6 ? '😮 That\'s quite low…' : v < 7 ? '😐 Getting there' : v <= 9 ? '😊 Great sleep!' : '😴 Well rested!';
+      document.getElementById('sleepLabel').innerText = v > 0 ? q : 'Slide to log last night\'s sleep';
+    }
+
+    function saveSleep() {
+      const v = parseFloat(document.getElementById('sleepSlider').value);
+      if (!v) return;
+      const d = getData(); d.sleep = v; saveData(d); updateSummary();
+      document.getElementById('sleepLabel').innerText = '✅ Sleep saved!';
+    }
+
+    // ── HABITS ─────────────────────────────────────────────
+    function buildHabits() {
+      const d = getData();
+      document.getElementById('habitsList').innerHTML = HABITS.map(h => `
+        <div class="habit-row ${d.habits[h.id] ? 'done' : ''}" onclick="toggleHabit('${h.id}')">
+          <div class="habit-icon">${h.icon}</div>
+          <div class="habit-name">${h.name}</div>
+          <div class="habit-check">${d.habits[h.id] ? '✓' : ''}</div>
+        </div>
+      `).join('');
+      const done = Object.values(d.habits).filter(Boolean).length;
+      const streak = getStreak();
+      document.getElementById('streakBanner').innerText =
+        done === HABITS.length ? `🔥 All habits done today! ${streak} day streak!` :
+        done > 0 ? `${done} of ${HABITS.length} habits done` : 'Check off your habits for today';
+      updateSummary();
+    }
+
+    function toggleHabit(id) {
+      const d = getData(); d.habits[id] = !d.habits[id]; saveData(d); buildHabits();
+    }
+
+    function getStreak() {
+      let streak = 0;
+      const d = new Date();
+      for (let i = 0; i < 365; i++) {
+        const key = 'wellness_' + d.toISOString().slice(0,10);
+        const entry = JSON.parse(localStorage.getItem(key) || '{}');
+        const done = Object.values(entry.habits || {}).filter(Boolean).length;
+        if (done > 0) streak++;
+        else if (i > 0) break;
+        d.setDate(d.getDate() - 1);
+      }
+      return streak;
+    }
+
+    function updateSummary() {
+      const d = getData();
+      const done = Object.values(d.habits).filter(Boolean).length;
+      const streak = getStreak();
+      document.getElementById('sumWater').innerText  = d.water;
+      document.getElementById('sumSleep').innerText  = d.sleep ? d.sleep + 'h' : '—';
+      document.getElementById('sumHabits').innerText = done + '/' + HABITS.length;
+      document.getElementById('sumStreak').innerText = streak + '🔥';
+      if (d.sleep) {
+        document.getElementById('sleepSlider').value = d.sleep;
+        updateSleep();
+      }
+    }
+
+    window.onload = () => {
+      const d = getData();
+      document.getElementById('waterGoal').value = d.goal || 8;
+      buildGlasses();
+      buildHabits();
+    };
+  </script>
+</body>
+</html>

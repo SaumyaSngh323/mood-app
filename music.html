@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music System – My Hub</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .music-layout { display: flex; flex-direction: column; gap: 16px; }
+
+    .lang-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .lang-tab {
+      padding: 8px 20px; border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.07);
+      color: inherit; font-family: 'Poppins', sans-serif;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: 0.3s;
+    }
+    .lang-tab:hover { background: rgba(255,255,255,0.15); }
+    .lang-tab.active { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.5); }
+
+    .search-wrap { position: relative; }
+    .search-wrap input { padding-left: 44px; font-size: 0.92rem; }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 1.1rem; opacity: 0.55; pointer-events: none; }
+    .search-clear { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; color: inherit; font-size: 1rem; opacity: 0.45; cursor: pointer; display: none; }
+
+    .section-label { font-size: 0.76rem; font-weight: 600; opacity: 0.55; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+
+    .songs-grid { display: flex; flex-direction: column; gap: 7px; max-height: 340px; overflow-y: auto; scrollbar-width: thin; }
+
+    .song-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.09);
+      cursor: pointer; transition: 0.25s;
+    }
+    .song-row:hover { background: rgba(255,255,255,0.14); }
+    .song-row.playing { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.35); }
+
+    .song-art { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: rgba(255,255,255,0.08); }
+    .song-info { flex: 1; min-width: 0; }
+    .song-name { font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .song-artist { font-size: 0.74rem; opacity: 0.6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .song-play-icon { font-size: 1.1rem; opacity: 0.65; flex-shrink: 0; }
+
+    .now-playing-bar {
+      display: none; align-items: center; gap: 14px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 18px; border: 1px solid rgba(255,255,255,0.2);
+    }
+    .np-art { width: 48px; height: 48px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+    .np-info { flex: 1; min-width: 0; }
+    .np-name { font-size: 0.9rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .np-artist { font-size: 0.75rem; opacity: 0.6; }
+    .np-note { font-size: 0.68rem; opacity: 0.45; margin-top: 2px; }
+    .np-btn {
+      padding: 7px 16px; border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.08);
+      color: inherit; font-family: 'Poppins', sans-serif;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: 0.3s;
+    }
+    .np-btn:hover { background: rgba(255,255,255,0.2); }
+    .np-btn.stop { border-color: rgba(255,107,107,0.5); color: #ff8888; }
+    .np-btn.stop:hover { background: rgba(255,107,107,0.12); }
+
+    .spinner { text-align: center; padding: 28px 0; opacity: 0.45; font-size: 0.88rem; }
+    .empty-state { text-align: center; padding: 28px 0; opacity: 0.45; font-size: 0.88rem; }
+  </style>
+</head>
+<body class="cute-mode">
+  <canvas id="bgCanvas"></canvas>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-logo">✨ My Hub</a>
+    <ul class="nav-links">
+      <li><a href="diary.html">Diary</a></li>
+      <li><a href="timer.html">Timer</a></li>
+      <li><a href="music.html" class="active">Music</a></li>
+      <li><a href="goals.html">Goals</a></li>
+      <li><a href="wellness.html">Wellness</a></li>
+      <li><a href="game.html">Game</a></li>
+    </ul>
+    <div class="theme-btns">
+      <button class="theme-btn" onclick="setTheme('cute')">Cute</button>
+      <button class="theme-btn" onclick="setTheme('classy')">Classy</button>
+      <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="glass-card">
+      <h1>🎵 Music System</h1>
+      <p class="subtitle">Search any song or browse recommendations by language.</p>
+
+      <div class="music-layout">
+
+        <div class="now-playing-bar" id="nowPlayingBar">
+          <img class="np-art" id="npArt" src="" alt="art">
+          <div class="np-info">
+            <div class="np-name" id="npName">—</div>
+            <div class="np-artist" id="npArtist">—</div>
+            <div class="np-note">🎧 30-second preview</div>
+          </div>
+          <button class="np-btn stop" onclick="stopMusic()">■ Stop</button>
+        </div>
+
+        <div class="widget-box">
+          <div class="section-label">🔍 Search any song</div>
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search song, artist…" oninput="onSearchInput()" onkeydown="if(event.key==='Enter') doSearch()">
+            <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+          </div>
+          <div id="searchResults"></div>
+        </div>
+
+        <div class="widget-box">
+          <div class="section-label">🌍 Recommendations by language</div>
+          <div class="lang-tabs" id="langTabs">
+            <button class="lang-tab active" onclick="selectLang('english', this)">🇬🇧 English</button>
+            <button class="lang-tab" onclick="selectLang('hindi', this)">🇮🇳 Hindi</button>
+            <button class="lang-tab" onclick="selectLang('both', this)">🌐 Both</button>
+            <button class="lang-tab" onclick="selectLang('kpop', this)">🇰🇷 K-Pop</button>
+            <button class="lang-tab" onclick="selectLang('spanish', this)">🇪🇸 Spanish</button>
+          </div>
+          <div id="recommendedResults" style="margin-top:14px;"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="bg.js"></script>
+  <script>
+    let currentAudio = null, currentSongRow = null, searchTimeout = null;
+
+    const langQueries = {
+      english: ['pop hits 2024','taylor swift','ed sheeran','dua lipa','the weeknd'],
+      hindi:   ['bollywood hits 2024','arijit singh','shreya ghoshal','atif aslam','pritam'],
+      both:    ['top songs 2024','arijit singh','dua lipa','bollywood pop','english hits'],
+      kpop:    ['bts','blackpink','stray kids','twice','newjeans'],
+      spanish: ['bad bunny','j balvin','reggaeton hits','karol g','shakira'],
+    };
+
+    function onSearchInput() {
+      const val = document.getElementById('searchInput').value;
+      document.getElementById('searchClear').style.display = val ? 'block' : 'none';
+      clearTimeout(searchTimeout);
+      if (!val.trim()) { document.getElementById('searchResults').innerHTML = ''; return; }
+      searchTimeout = setTimeout(doSearch, 500);
+    }
+
+    async function doSearch() {
+      const q = document.getElementById('searchInput').value.trim();
+      if (!q) return;
+      const box = document.getElementById('searchResults');
+      box.innerHTML = '<div class="spinner">Searching…</div>';
+      try {
+        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=12&entity=song`);
+        const data = await res.json();
+        renderSongs(data.results, box);
+      } catch(e) {
+        box.innerHTML = '<div class="empty-state">⚠️ Could not load results.</div>';
+      }
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchClear').style.display = 'none';
+      document.getElementById('searchResults').innerHTML = '';
+    }
+
+    function selectLang(lang, btn) {
+      document.querySelectorAll('.lang-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      localStorage.setItem('musicLang', lang);
+      loadRecommended(lang);
+    }
+
+    async function loadRecommended(lang) {
+      const box = document.getElementById('recommendedResults');
+      box.innerHTML = '<div class="spinner">Loading recommendations…</div>';
+      const queries = langQueries[lang] || langQueries['english'];
+      const q = queries[Math.floor(Math.random() * queries.length)];
+      try {
+        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(q)}&media=music&limit=15&entity=song`);
+        const data = await res.json();
+        renderSongs(data.results, box);
+      } catch(e) {
+        box.innerHTML = '<div class="empty-state">⚠️ Could not load.</div>';
+      }
+    }
+
+    function renderSongs(songs, container) {
+      const filtered = (songs||[]).filter(s => s.previewUrl);
+      if (!filtered.length) { container.innerHTML = '<div class="empty-state">No playable previews found.</div>'; return; }
+      container.innerHTML = `<div class="songs-grid">${filtered.map(s => `
+        <div class="song-row" onclick='playSong(${JSON.stringify(s).replace(/'/g,"&#39;")}, this)'>
+          <img class="song-art" src="${s.artworkUrl60}" alt="art" onerror="this.style.opacity=0.2">
+          <div class="song-info">
+            <div class="song-name">${s.trackName}</div>
+            <div class="song-artist">${s.artistName} · ${s.collectionName||''}</div>
+          </div>
+          <div class="song-play-icon">▶</div>
+        </div>
+      `).join('')}</div>`;
+    }
+
+    function playSong(song, row) {
+      if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+      if (currentSongRow) { currentSongRow.classList.remove('playing'); currentSongRow.querySelector('.song-play-icon').innerText = '▶'; }
+      if (currentSongRow === row) { currentSongRow = null; currentAudio = null; document.getElementById('nowPlayingBar').style.display = 'none'; return; }
+      currentAudio = new Audio(song.previewUrl);
+      currentAudio.play().catch(()=>{});
+      currentAudio.onended = () => { row.classList.remove('playing'); row.querySelector('.song-play-icon').innerText='▶'; document.getElementById('nowPlayingBar').style.display='none'; currentSongRow=null; };
+      currentSongRow = row;
+      row.classList.add('playing');
+      row.querySelector('.song-play-icon').innerText = '⏸';
+      document.getElementById('npArt').src = song.artworkUrl100 || song.artworkUrl60;
+      document.getElementById('npName').innerText = song.trackName;
+      document.getElementById('npArtist').innerText = song.artistName;
+      document.getElementById('nowPlayingBar').style.display = 'flex';
+      row.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+
+    function stopMusic() {
+      if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+      if (currentSongRow) { currentSongRow.classList.remove('playing'); currentSongRow.querySelector('.song-play-icon').innerText='▶'; currentSongRow=null; }
+      document.getElementById('nowPlayingBar').style.display = 'none';
+    }
+
+    window.onload = () => {
+      const savedLang = localStorage.getItem('musicLang') || 'english';
+      const btn = [...document.querySelectorAll('.lang-tab')].find(b=>b.textContent.toLowerCase().includes(savedLang));
+      if (btn) { document.querySelectorAll('.lang-tab').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+      loadRecommended(savedLang);
+    };
+  </script>
+</body>
+</html>
