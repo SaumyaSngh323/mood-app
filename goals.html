@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Goals – My Hub</title>
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .add-goal-row { display: flex; gap: 10px; margin-bottom: 14px; }
+    .add-goal-row input { flex: 1; margin: 0; }
+    .add-btn {
+      padding: 10px 18px; border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.1);
+      color: inherit; font-family: 'Poppins', sans-serif;
+      font-size: 1rem; font-weight: 700; cursor: pointer; transition: 0.3s; white-space: nowrap;
+    }
+    .add-btn:hover { background: rgba(255,255,255,0.22); }
+    .goals-list { display: flex; flex-direction: column; gap: 9px; max-height: 340px; overflow-y: auto; scrollbar-width: thin; }
+    .goal-item {
+      display: flex; align-items: center; gap: 12px; padding: 13px 16px;
+      background: rgba(255,255,255,0.06); border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1); transition: 0.3s;
+    }
+    .goal-item.done { opacity: 0.45; }
+    .goal-item.done .goal-text { text-decoration: line-through; }
+    .goal-check {
+      appearance: none; width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid currentColor; cursor: pointer; flex-shrink: 0;
+      position: relative; transition: 0.3s;
+    }
+    .goal-check:checked::after { content:'✓'; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:12px; font-weight:700; }
+    .goal-check:checked { background: rgba(255,255,255,0.25); }
+    .goal-text { flex: 1; font-size: 0.9rem; }
+    .goal-delete { background:none; border:none; color:inherit; opacity:0.35; font-size:1rem; cursor:pointer; padding:4px; transition:0.3s; }
+    .goal-delete:hover { opacity: 0.85; }
+    .goals-footer { display:flex; align-items:center; justify-content:space-between; margin-top:14px; font-size:0.78rem; opacity:0.6; }
+    .empty-state { text-align:center; opacity:0.45; padding:30px 0; font-size:0.88rem; }
+  </style>
+</head>
+<body class="cute-mode">
+  <canvas id="bgCanvas"></canvas>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-logo">✨ My Hub</a>
+    <ul class="nav-links">
+      <li><a href="diary.html">Diary</a></li>
+      <li><a href="timer.html">Timer</a></li>
+      <li><a href="music.html">Music</a></li>
+      <li><a href="goals.html" class="active">Goals</a></li>
+      <li><a href="wellness.html">Wellness</a></li>
+      <li><a href="game.html">Game</a></li>
+    </ul>
+    <div class="theme-btns">
+      <button class="theme-btn" onclick="setTheme('cute')">Cute</button>
+      <button class="theme-btn" onclick="setTheme('classy')">Classy</button>
+      <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="glass-card">
+      <h1>✅ My Goals</h1>
+      <p class="subtitle">Set your intentions and check them off one by one.</p>
+
+      <div class="widget-box">
+        <div class="add-goal-row">
+          <input type="text" id="goalInput" placeholder="Add a new goal…" onkeydown="if(event.key==='Enter') addGoal()">
+          <button class="add-btn" onclick="addGoal()">+ Add</button>
+        </div>
+        <div class="goals-list" id="goalsList">
+          <div class="empty-state">🎯 No goals yet.<br>Add one above to get started!</div>
+        </div>
+        <div class="goals-footer">
+          <span id="goalProgress"></span>
+          <button class="btn btn-danger" style="width:auto;padding:6px 16px;font-size:0.75rem;" onclick="clearDone()">Clear completed</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="bg.js"></script>
+  <script>
+    let goals = JSON.parse(localStorage.getItem('goals')) || [];
+
+    function saveGoals() { localStorage.setItem('goals', JSON.stringify(goals)); }
+
+    function addGoal() {
+      const text = document.getElementById('goalInput').value.trim();
+      if (!text) return;
+      goals.push({ text, done: false, id: Date.now() });
+      document.getElementById('goalInput').value = '';
+      saveGoals(); renderGoals();
+    }
+
+    function toggleGoal(id) {
+      const g = goals.find(g=>g.id===id);
+      if (g) g.done = !g.done;
+      saveGoals(); renderGoals();
+    }
+
+    function deleteGoal(id) { goals = goals.filter(g=>g.id!==id); saveGoals(); renderGoals(); }
+    function clearDone()    { goals = goals.filter(g=>!g.done);   saveGoals(); renderGoals(); }
+
+    function renderGoals() {
+      const list = document.getElementById('goalsList');
+      const prog = document.getElementById('goalProgress');
+      if (!goals.length) { list.innerHTML='<div class="empty-state">🎯 No goals yet.<br>Add one above to get started!</div>'; prog.innerText=''; return; }
+      const done = goals.filter(g=>g.done).length;
+      prog.innerText = `${done} of ${goals.length} completed`;
+      list.innerHTML = goals.map(g=>`
+        <div class="goal-item ${g.done?'done':''}">
+          <input type="checkbox" class="goal-check" ${g.done?'checked':''} onchange="toggleGoal(${g.id})">
+          <span class="goal-text">${g.text}</span>
+          <button class="goal-delete" onclick="deleteGoal(${g.id})">✕</button>
+        </div>
+      `).join('');
+    }
+
+    window.onload = renderGoals;
+  </script>
+</body>
+</html>
