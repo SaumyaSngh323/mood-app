@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Step Tracker – My Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0d0015;
+      --surface: rgba(255,255,255,0.05);
+      --border: rgba(255,255,255,0.1);
+      --accent: #b06aff;
+      --accent2: #ff6aab;
+      --text: #f0e6ff;
+      --muted: rgba(240,230,255,0.5);
+      --glow: rgba(176,106,255,0.3);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background orbs */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      animation: floatOrb 8s ease-in-out infinite;
+    }
+    .orb1 { width: 400px; height: 400px; background: #7c3aed; top: -100px; left: -100px; animation-delay: 0s; }
+    .orb2 { width: 300px; height: 300px; background: #db2777; bottom: -50px; right: -50px; animation-delay: 3s; }
+    .orb3 { width: 250px; height: 250px; background: #4f46e5; top: 50%; left: 50%; animation-delay: 6s; }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* Navbar */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,0,21,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    nav a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    nav span { color: var(--muted); font-size: 0.85rem; }
+
+    /* Main layout */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* Glass card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+    }
+
+    /* Watch ring */
+    .watch-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .ring-container {
+      position: relative;
+      width: 220px;
+      height: 220px;
+    }
+
+    .ring-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: rgba(255,255,255,0.08);
+      stroke-width: 14;
+    }
+
+    .ring-progress {
+      fill: none;
+      stroke: url(#ringGrad);
+      stroke-width: 14;
+      stroke-linecap: round;
+      stroke-dasharray: 628;
+      stroke-dashoffset: 628;
+      transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: drop-shadow(0 0 8px rgba(176,106,255,0.6));
+    }
+
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .ring-steps {
+      font-family: 'Space Mono', monospace;
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+
+    .ring-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .ring-percent {
+      font-size: 0.85rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat-box {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .stat-icon { font-size: 1.4rem; margin-bottom: 4px; }
+    .stat-val {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .stat-lbl { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+    /* Input section */
+    .input-section { display: flex; flex-direction: column; gap: 12px; }
+
+    .input-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .step-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .step-input {
+      flex: 1;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 1.2rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .step-input:focus { border-color: var(--accent); }
+    .step-input::placeholder { color: var(--muted); font-size: 0.9rem; }
+
+    .goal-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .goal-row input {
+      width: 90px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
+      box-shadow: 0 4px 20px var(--glow);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px var(--glow); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+    /* Motivational message */
+    .motivation {
+      text-align: center;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      background: rgba(176,106,255,0.1);
+      border: 1px solid rgba(176,106,255,0.2);
+      color: var(--accent);
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.4s;
+    }
+
+    /* Section title */
+    .section-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    /* Weekly chart */
+    .chart-wrap {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 100px;
+      padding-bottom: 4px;
+    }
+
+    .bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .bar {
+      width: 100%;
+      border-radius: 6px 6px 0 0;
+      min-height: 4px;
+      transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .bar.active {
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 10px var(--glow);
+    }
+    .bar.inactive { background: rgba(255,255,255,0.1); }
+    .bar.today {
+      background: linear-gradient(180deg, #fff, var(--accent));
+      box-shadow: 0 0 14px rgba(255,255,255,0.3);
+    }
+
+    .bar-day {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    /* History log */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .history-list::-webkit-scrollbar { width: 4px; }
+    .history-list::-webkit-scrollbar-track { background: transparent; }
+    .history-list::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .history-date { color: var(--muted); }
+    .history-steps { font-family: 'Space Mono', monospace; color: var(--accent); font-weight: 700; }
+    .history-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(176,106,255,0.15);
+      color: var(--accent);
+    }
+    .history-badge.goal { background: rgba(34,197,94,0.15); color: #4ade80; }
+
+    /* Streak */
+    .streak-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px;
+      background: rgba(255,106,171,0.08);
+      border: 1px solid rgba(255,106,171,0.2);
+      border-radius: 14px;
+    }
+    .streak-num {
+      font-family: 'Space Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent2);
+    }
+    .streak-text { font-size: 0.85rem; color: var(--muted); line-height: 1.4; }
+
+    .empty-state {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 20px;
+    }
+
+    /* ── Mobile Responsive ── */
+    @media (max-width: 480px) {
+      nav { padding: 12px 16px; }
+      nav a { font-size: 0.9rem; }
+
+      main { padding: 16px 12px 80px; gap: 14px; }
+
+      h1 { font-size: 1.35rem; }
+
+      .card { padding: 16px; border-radius: 16px; }
+
+      .ring-container { width: 190px; height: 190px; }
+      .ring-steps { font-size: 2rem; }
+
+      .stat-box { padding: 10px 6px; border-radius: 12px; }
+      .stat-icon { font-size: 1.2rem; }
+      .stat-val { font-size: 0.95rem; }
+      .stat-lbl { font-size: 0.65rem; }
+
+      .step-input {
+        font-size: 1rem;
+        padding: 14px 12px;
+      }
+
+      .goal-row { flex-wrap: wrap; gap: 6px; font-size: 0.8rem; }
+      .goal-row input { width: 80px; }
+
+      .btn { padding: 14px 16px; font-size: 0.85rem; border-radius: 12px; }
+
+      .motivation { font-size: 0.85rem; padding: 14px; }
+
+      .streak-display { padding: 14px; gap: 8px; }
+      .streak-num { font-size: 1.7rem; }
+      .streak-text { font-size: 0.8rem; }
+
+      .chart-wrap { height: 80px; gap: 6px; }
+      .bar-day { font-size: 0.6rem; }
+
+      .history-item { padding: 10px 12px; font-size: 0.8rem; }
+      .history-badge { font-size: 0.65rem; padding: 2px 6px; }
+
+      .section-title { font-size: 0.75rem; }
+    }
+
+    @media (max-width: 360px) {
+      .ring-container { width: 160px; height: 160px; }
+      .ring-steps { font-size: 1.7rem; }
+      .stats-row { gap: 8px; }
+    }
+
+    /* Touch-friendly tap targets */
+    @media (hover: none) {
+      .btn { min-height: 48px; }
+      .step-input { min-height: 52px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+</div>
+
+<nav>
+  <a href="index.html">✨ My Hub</a>
+  <span>/ Step Tracker</span>
+</nav>
+
+<main>
+  <div>
+    <h1>👟 Step Tracker</h1>
+    <p class="subtitle">Walk your way to wellness</p>
+  </div>
+
+  <!-- Watch Ring Card -->
+  <div class="card watch-wrap">
+    <div class="ring-container">
+      <svg class="ring-svg" viewBox="0 0 220 220">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#b06aff"/>
+            <stop offset="100%" stop-color="#ff6aab"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-bg" cx="110" cy="110" r="100"/>
+        <circle class="ring-progress" id="ringProgress" cx="110" cy="110" r="100"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-steps" id="displaySteps">0</div>
+        <div class="ring-label">steps</div>
+        <div class="ring-percent" id="displayPercent">0%</div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" style="width:100%">
+      <div class="stat-box">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-val" id="caloriesVal">0</div>
+        <div class="stat-lbl">Calories</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">📏</div>
+        <div class="stat-val" id="distanceVal">0.0</div>
+        <div class="stat-lbl">km</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-val" id="minutesVal">0</div>
+        <div class="stat-lbl">min active</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Motivation -->
+  <div class="motivation" id="motivationMsg">Start walking and log your steps! 🚀</div>
+
+  <!-- Log Steps -->
+  <div class="card input-section">
+    <div class="section-title">📝 Log Today's Steps</div>
+    <div class="step-input-row">
+      <input type="number" class="step-input" id="stepInput" placeholder="e.g. 8500" min="0" max="99999"/>
+    </div>
+    <div class="goal-row">
+      🎯 Daily goal:
+      <input type="number" id="goalInput" value="10000" min="1000" max="50000"/>
+      steps
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-primary" style="flex:1" onclick="logSteps()">Log Steps</button>
+      <button class="btn btn-ghost" onclick="resetToday()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Streak -->
+  <div class="streak-display">
+    <div class="streak-num" id="streakNum">0</div>
+    <div class="streak-text">🔥 day streak<br><span style="font-size:0.75rem">Keep it going!</span></div>
+  </div>
+
+  <!-- Weekly Chart -->
+  <div class="card">
+    <div class="section-title">📊 This Week</div>
+    <div class="chart-wrap" id="weekChart"></div>
+  </div>
+
+  <!-- History -->
+  <div class="card">
+    <div class="section-title">📅 History</div>
+    <div class="history-list" id="historyList">
+      <div class="empty-state">No logs yet — start walking! 👟</div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  function getToday() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  function loadData() {
+    return JSON.parse(localStorage.getItem('stepData') || '{}');
+  }
+
+  function saveData(data) {
+    localStorage.setItem('stepData', JSON.stringify(data));
+  }
+
+  function getGoal() {
+    return parseInt(localStorage.getItem('stepGoal') || '10000');
+  }
+
+  function getMotivation(steps, goal) {
+    const pct = steps / goal;
+    if (steps === 0) return "Start walking and log your steps! 🚀";
+    if (pct < 0.25) return "Great start! Every step counts 💪";
+    if (pct < 0.5) return "You're on your way! Keep moving 🏃";
+    if (pct < 0.75) return "Halfway there! You're crushing it 🔥";
+    if (pct < 1) return "Almost at your goal! Push through! ⚡";
+    if (pct >= 1) return "🎉 Goal smashed! You're a legend today!";
+  }
+
+  function updateRing(steps, goal) {
+    const circumference = 628;
+    const pct = Math.min(steps / goal, 1);
+    const offset = circumference - pct * circumference;
+    document.getElementById('ringProgress').style.strokeDashoffset = offset;
+    document.getElementById('displaySteps').textContent = steps.toLocaleString();
+    document.getElementById('displayPercent').textContent = Math.round(pct * 100) + '%';
+    document.getElementById('caloriesVal').textContent = Math.round(steps * 0.04);
+    document.getElementById('distanceVal').textContent = (steps * 0.000762).toFixed(1);
+    document.getElementById('minutesVal').textContent = Math.round(steps / 100);
+    document.getElementById('motivationMsg').textContent = getMotivation(steps, goal);
+  }
+
+  function calcStreak(data, goal) {
+    let streak = 0;
+    let d = new Date();
+    while (true) {
+      const key = d.toISOString().split('T')[0];
+      if (data[key] && data[key] >= goal) {
+        streak++;
+        d.setDate(d.getDate() - 1);
+      } else break;
+    }
+    return streak;
+  }
+
+  function renderChart(data, goal) {
+    const chart = document.getElementById('weekChart');
+    chart.innerHTML = '';
+    const today = new Date();
+    const maxSteps = Math.max(goal, ...Object.values(data), 1);
+
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const key = d.toISOString().split('T')[0];
+      const steps = data[key] || 0;
+      const height = Math.max(4, (steps / maxSteps) * 90);
+      const isToday = i === 0;
+      const hitGoal = steps >= goal;
+
+      const col = document.createElement('div');
+      col.className = 'bar-col';
+      col.innerHTML = `
+        <div class="bar ${isToday ? 'today' : steps > 0 ? 'active' : 'inactive'}" 
+             style="height:${height}px" title="${steps.toLocaleString()} steps"></div>
+        <span class="bar-day">${DAYS[d.getDay()]}</span>
+      `;
+      chart.appendChild(col);
+    }
+  }
+
+  function renderHistory(data, goal) {
+    const list = document.getElementById('historyList');
+    const entries = Object.entries(data).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 10);
+    if (!entries.length) {
+      list.innerHTML = '<div class="empty-state">No logs yet — start walking! 👟</div>';
+      return;
+    }
+    list.innerHTML = entries.map(([date, steps]) => {
+      const hitGoal = steps >= goal;
+      const d = new Date(date);
+      const label = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+      return `
+        <div class="history-item">
+          <span class="history-date">${label}</span>
+          <span class="history-steps">${steps.toLocaleString()}</span>
+          <span class="history-badge ${hitGoal ? 'goal' : ''}">${hitGoal ? '✅ Goal' : Math.round(steps/goal*100) + '%'}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function refresh() {
+    const data = loadData();
+    const goal = getGoal();
+    const today = getToday();
+    const todaySteps = data[today] || 0;
+
+    document.getElementById('goalInput').value = goal;
+    updateRing(todaySteps, goal);
+    document.getElementById('streakNum').textContent = calcStreak(data, goal);
+    renderChart(data, goal);
+    renderHistory(data, goal);
+  }
+
+  function logSteps() {
+    const input = document.getElementById('stepInput');
+    const steps = parseInt(input.value);
+    if (!steps || steps < 0) { input.focus(); return; }
+
+    const goal = parseInt(document.getElementById('goalInput').value) || 10000;
+    localStorage.setItem('stepGoal', goal);
+
+    const data = loadData();
+    data[getToday()] = steps;
+    saveData(data);
+    input.value = '';
+    refresh();
+  }
+
+  function resetToday() {
+    const data = loadData();
+    delete data[getToday()];
+    saveData(data);
+    refresh();
+  }
+
+  // Update goal on change
+  document.getElementById('goalInput').addEventListener('change', () => {
+    const goal = parseInt(document.getElementById('goalInput').value) || 10000;
+    localStorage.setItem('stepGoal', goal);
+    refresh();
+  });
+
+  // Enter key to log
+  document.getElementById('stepInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') logSteps();
+  });
+
+  refresh();
+</script>
+</body>
+</html>
